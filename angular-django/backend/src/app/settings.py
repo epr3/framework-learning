@@ -108,6 +108,10 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+REST_FRAMEWORK = {
+    'TEST_REQUEST_DEFAULT_FORMAT': 'json'
+}
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.0/topics/i18n/
@@ -127,3 +131,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = '/static/'
+
+JWT_SECRET = 'secret'
+JWT_ALGORITHM = 'HS256'
+JWT_ACCESS_EXP_DELTA_SECONDS = 86400
+JWT_REFRESH_EXP_DELTA_SECONDS = 604800

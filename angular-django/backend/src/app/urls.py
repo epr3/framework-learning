@@ -21,5 +21,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('refresh/', core_views.RefreshTokenView.as_view()),
     path('login/', core_views.Login.as_view()),
+    path('register/', core_views.Register.as_view()),
     path('logout/', core_views.Logout.as_view()),
 ]

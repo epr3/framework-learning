@@ -86,7 +86,7 @@ class Register(APIView):
         user_serializer = UserSerializer(data=request.data)
         if user_serializer.is_valid():
             user_serializer.save()
-            user = authenticate(request, **user_serializer.data)
+            user = authenticate(request, **request.data)
             response = create_response_tokens_from_user(user)
             if response is not None:
                 return response

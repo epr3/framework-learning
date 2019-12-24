@@ -21,5 +21,5 @@ class User(AbstractBaseUser, PermissionsMixin):
 class RefreshToken(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
     token = models.CharField(max_length=255)
-    expiry_date = models.DateField()
+    expiry_date = models.DateTimeField()
     user = models.ForeignKey(User, on_delete=models.CASCADE)

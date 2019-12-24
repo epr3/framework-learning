@@ -1,4 +1,3 @@
-from datetime import datetime
 from django.test import TestCase
 
 from ..factories import UserFactory, RefreshTokenFactory
@@ -19,7 +18,7 @@ class UserModelTestCase(TestCase):
 
 class RefreshTokenModelTestCase(TestCase):
     def setUp(self):
-        self.refresh_token = RefreshTokenFactory(expiry_date=datetime.now())
+        self.refresh_token = RefreshTokenFactory()
 
     def test_token_field_label(self):
         field_label = self.refresh_token._meta.get_field('token').verbose_name

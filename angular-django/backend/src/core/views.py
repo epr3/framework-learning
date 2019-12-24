@@ -1,11 +1,13 @@
-from datetime import datetime, timedelta
 import jwt
+from datetime import timedelta
 from django.contrib.auth import authenticate
+from django.utils import timezone
 from django.conf import settings
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.authentication import BasicAuthentication
+from .authentication import JWTAuthentication
 from .models import RefreshToken
 from .serializers import RefreshTokenSerializer, UserSerializer
 
@@ -18,7 +20,7 @@ def create_response_tokens_from_user(user):
             'is_superuser': user.is_superuser
         },
         'exp':
-        datetime.utcnow() +
+        timezone.now() +
         timedelta(seconds=settings.JWT_ACCESS_EXP_DELTA_SECONDS)
     }
 
@@ -29,7 +31,7 @@ def create_response_tokens_from_user(user):
             'is_superuser': user.is_superuser
         },
         'exp':
-        datetime.utcnow() +
+        timezone.now() +
         timedelta(seconds=settings.JWT_REFRESH_EXP_DELTA_SECONDS)
     }
 
@@ -43,9 +45,8 @@ def create_response_tokens_from_user(user):
             refresh_token.decode('utf-8'),
             'user':
             user.id,
-            'expiry_date': (datetime.utcnow() + timedelta(
+            'expiry_date': timezone.now() + timedelta(
                 seconds=settings.JWT_REFRESH_EXP_DELTA_SECONDS)
-            ).strftime('%Y-%m-%d')
         })
     if serializer.is_valid():
         serializer.save()
@@ -54,7 +55,7 @@ def create_response_tokens_from_user(user):
         response.set_cookie(
             key='refresh_token',
             value=refresh_token.decode('utf-8'),
-            expires=datetime.utcnow() +
+            expires=timezone.now() +
             timedelta(seconds=settings.JWT_REFRESH_EXP_DELTA_SECONDS),
             httponly=True)
         return response
@@ -80,8 +81,6 @@ class Login(APIView):
 
 
 class Register(APIView):
-    authentication_classes = [BasicAuthentication]
-
     def post(self, request):
         user_serializer = UserSerializer(data=request.data)
         if user_serializer.is_valid():
@@ -99,19 +98,21 @@ class Register(APIView):
 class RefreshTokenView(APIView):
     def get(self, request):
         refresh_token = request.COOKIES.get('refresh_token')
-        db_token = RefreshToken.objects.get(token=refresh_token)
-        if db_token is not None:
-            user = db_token.user
-            response = create_response_tokens_from_user(user)
-            if response is not None:
-                return response
+        if refresh_token:
+            db_token = RefreshToken.objects.get(token=refresh_token)
+            if db_token is not None:
+                user = db_token.user
+                response = create_response_tokens_from_user(user)
+                if response is not None:
+                    return response
         return Response('Unauthorized', status=status.HTTP_401_UNAUTHORIZED)
 
 
 class Logout(APIView):
+    authentication_classes = [JWTAuthentication]
+
     def delete(self, request):
-        refresh_token = request.COOKIES.get('refresh_token')
-        db_token = RefreshToken.objects.get(token=refresh_token)
+        db_token = RefreshToken.objects.get(user=request.user)
         if db_token is not None:
             db_token.delete()
             return Response('Logged out', status=status.HTTP_200_OK)

@@ -1,15 +1,18 @@
-import { TestBed, async, inject } from '@angular/core/testing';
+import { TestBed, async, inject } from "@angular/core/testing";
 
-import { GuestGuard } from './guest.guard';
+import { HttpClientModule } from "@angular/common/http";
 
-describe('GuestGuard', () => {
+import { GuestGuard } from "./guest.guard";
+
+describe("GuestGuard", () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [GuestGuard]
+      providers: [GuestGuard],
+      imports: [HttpClientModule]
     });
   });
 
-  it('should ...', inject([GuestGuard], (guard: GuestGuard) => {
+  it("should ...", inject([GuestGuard], (guard: GuestGuard) => {
     expect(guard).toBeTruthy();
   }));
 });

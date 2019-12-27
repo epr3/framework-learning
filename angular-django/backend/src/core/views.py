@@ -112,8 +112,11 @@ class Logout(APIView):
     authentication_classes = [JWTAuthentication]
 
     def delete(self, request):
-        db_token = RefreshToken.objects.get(user=request.user)
-        if db_token is not None:
-            db_token.delete()
-            return Response('Logged out', status=status.HTTP_200_OK)
-        return Response('Unauthorized', status=status.HTTP_401_UNAUTHORIZED)
+        cookie_token = request.COOKIES.get('refresh_token')
+        if cookie_token is not None:
+            db_token = RefreshToken.objects.get(
+                user=request.user, token=cookie_token)
+            if db_token is not None:
+                db_token.delete()
+                return Response('Logged out', status=status.HTTP_200_OK)
+            return Response('Unauthorized', status=status.HTTP_401_UNAUTHORIZED)

@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
-import { Observable, of } from "rxjs";
-import { catchError, map, tap } from "rxjs/operators";
+import { Observable, of, BehaviorSubject } from "rxjs";
+import { catchError, map, tap, shareReplay } from "rxjs/operators";
 
 import { MessageService } from "./../message.service";
 
@@ -10,9 +10,13 @@ import { MessageService } from "./../message.service";
 })
 export class AuthService {
   private url = "http://localhost:8000";
+  private logger = new BehaviorSubject<boolean>(
+    !!localStorage.getItem("bookStore:access")
+  );
 
   httpOptions = {
-    headers: new HttpHeaders({ "Content-Type": "application/json" })
+    headers: new HttpHeaders({ "Content-Type": "application/json" }),
+    withCredentials: true
   };
 
   constructor(
@@ -21,6 +25,7 @@ export class AuthService {
   ) {}
 
   private log(message: string) {
+    console.log(message);
     this.messageService.add(`AuthService: ${message}`);
   }
 
@@ -39,9 +44,25 @@ export class AuthService {
 
   storeAuth(accessToken: string) {
     localStorage.setItem("bookStore:access", accessToken);
+    this.logger.next(true);
   }
 
-  login(email: string, password: string): Observable<object> {
+  deleteAuth() {
+    localStorage.removeItem("bookStore:access");
+    this.logger.next(false);
+  }
+
+  public isLoggedIn(): Observable<boolean> {
+    return this.logger.asObservable();
+  }
+
+  login({
+    email,
+    password
+  }: {
+    email: string;
+    password: string;
+  }): Observable<object> {
     return this.http
       .post<{ access_token: string }>(
         `${this.url}/login/`,
@@ -53,7 +74,27 @@ export class AuthService {
         tap(({ access_token }) => {
           this.storeAuth(access_token);
         }),
-        catchError(this.handleError<object>("login"))
+        catchError(this.handleError<object>("login")),
+        shareReplay()
+      );
+  }
+
+  logout(): Observable<object> {
+    return this.http
+      .delete(`${this.url}/logout/`, {
+        headers: new HttpHeaders({
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("bookStore:access")}`
+        }),
+        withCredentials: true
+      })
+      .pipe(
+        tap(() => this.log("logged out")),
+        tap(() => {
+          this.deleteAuth();
+        }),
+        catchError(this.handleError<object>("logout")),
+        shareReplay()
       );
   }
 }

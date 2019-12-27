@@ -30,6 +30,7 @@ class LogoutTestCase(APITestCase):
     def test_delete(self):
         url = reverse('logout')
         self.client.force_authenticate(user=self.user)
+        self.client.cookies['refresh_token'] = self.refresh_token.token
         response = self.client.delete(url, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(RefreshToken.objects.count(), 0)

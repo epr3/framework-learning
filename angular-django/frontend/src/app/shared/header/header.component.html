@@ -1,7 +1,12 @@
 <mat-toolbar>
   <span routerLink="/" class="logo">Book store</span>
   <nav class="actions">
-    <a routerLink="/login" routerLinkActive="active">Login</a>
-    <a routerLink="/register" routerLinkActive="active">Register</a>
+    <ng-container *ngIf="!isLoggedIn; else elseTemplate">
+      <a routerLink="/login" routerLinkActive="active">Log in</a>
+      <a routerLink="/register" routerLinkActive="active">Register</a>
+    </ng-container>
+    <ng-template #elseTemplate>
+      <a (click)="logout()">Log out</a>
+    </ng-template>
   </nav>
 </mat-toolbar>

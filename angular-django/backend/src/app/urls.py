@@ -16,6 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from core import views as core_views
+from books import views as book_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -23,4 +24,5 @@ urlpatterns = [
     path('login/', core_views.Login.as_view(), name='login'),
     path('register/', core_views.Register.as_view(), name='register'),
     path('logout/', core_views.Logout.as_view(), name='logout'),
+    path('test/', book_views.Hello.as_view())
 ]

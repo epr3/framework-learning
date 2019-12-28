@@ -1,4 +1,4 @@
-from jwt import exceptions, decode
+from jwt import decode
 from django.conf import settings
 from rest_framework import HTTP_HEADER_ENCODING, authentication, exceptions as rest_exceptions
 from .models import User
@@ -21,12 +21,10 @@ class JWTAuthentication(authentication.BaseAuthentication):
 
     def authenticate(self, request):
         header = self.get_header(request)
-        if header is not None:
+        try:
             token = header.decode('utf-8').split(' ')[1].encode()
-            try:
-                decoded_token = decode(token, settings.JWT_SECRET)
-            except exceptions.PyJWTError:
-                raise rest_exceptions.AuthenticationFailed('Token error')
+            decoded_token = decode(token, settings.JWT_SECRET)
+        except:
+            raise rest_exceptions.AuthenticationFailed('Token error')
 
-            return self.get_user(decoded_token), None
-        return None
+        return self.get_user(decoded_token), None

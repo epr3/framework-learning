@@ -60,7 +60,7 @@ def create_response_tokens_from_user(user):
             httponly=True)
         return response
     else:
-        return None
+        return Response(serializer.errors, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 class Login(APIView):
@@ -70,11 +70,7 @@ class Login(APIView):
         user = authenticate(request, **request.data)
         if user is not None:
             response = create_response_tokens_from_user(user)
-            if response is not None:
-                return response
-            else:
-                return Response('Error while logging in',
-                                status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return response
         else:
             return Response('Invalid email or password',
                             status=status.HTTP_401_UNAUTHORIZED)
@@ -87,10 +83,7 @@ class Register(APIView):
             user_serializer.save()
             user = authenticate(request, **request.data)
             response = create_response_tokens_from_user(user)
-            if response is not None:
-                return response
-            else:
-                return Response('Error while registering', status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return response
         else:
             return Response(user_serializer.errors, status=status.HTTP_422_UNPROCESSABLE_ENTITY)
 
@@ -103,9 +96,8 @@ class RefreshTokenView(APIView):
             if db_token is not None:
                 user = db_token.user
                 response = create_response_tokens_from_user(user)
-                if response is not None:
-                    return response
-        return Response('Unauthorized', status=status.HTTP_401_UNAUTHORIZED)
+                return response
+        return Response('Refresh token is invalid', status=status.HTTP_400_BAD_REQUEST)
 
 
 class Logout(APIView):

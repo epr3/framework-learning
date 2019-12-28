@@ -15,18 +15,13 @@ import { AuthService } from "./auth.service";
 })
 export class AuthGuard implements CanActivate {
   constructor(private authService: AuthService) {}
-  canActivate(
-    next: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot
-  ):
-    | Observable<boolean | UrlTree>
-    | Promise<boolean | UrlTree>
-    | boolean
-    | UrlTree {
+  canActivate(): Observable<boolean> {
     return this.authService.isLoggedIn().pipe(
       map(res => {
         if (res) {
           return true;
+        } else {
+          return false;
         }
       })
     );

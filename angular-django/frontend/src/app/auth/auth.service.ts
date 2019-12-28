@@ -52,7 +52,7 @@ export class AuthService {
     this.logger.next(false);
   }
 
-  public isLoggedIn(): Observable<boolean> {
+  isLoggedIn(): Observable<boolean> {
     return this.logger.asObservable();
   }
 

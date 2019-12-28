@@ -1,17 +1,51 @@
-import { TestBed, async, inject } from "@angular/core/testing";
+import { TestBed, inject } from "@angular/core/testing";
 import { HttpClientModule } from "@angular/common/http";
+
+import { BehaviorSubject, Observable } from "rxjs";
+
+import { AuthService } from "./auth.service";
 
 import { AuthGuard } from "./auth.guard";
 
 describe("AuthGuard", () => {
+  class FakeAuthService {
+    logger = new BehaviorSubject<boolean>(false);
+
+    isLoggedIn(): Observable<boolean> {
+      return this.logger.asObservable();
+    }
+  }
+
+  let authService: FakeAuthService;
+
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [AuthGuard],
+      providers: [
+        { provide: AuthService, useValue: new FakeAuthService() },
+        AuthGuard
+      ],
       imports: [HttpClientModule]
     });
+
+    authService = TestBed.get(AuthService);
   });
 
-  it("should ...", inject([AuthGuard], (guard: AuthGuard) => {
-    expect(guard).toBeTruthy();
-  }));
+  it("should return false if is logged in is false", inject(
+    [AuthGuard],
+    (guard: AuthGuard) => {
+      guard.canActivate().subscribe(res => {
+        expect(res).toBeFalsy();
+      });
+    }
+  ));
+
+  it("should return true if is logged in is true", inject(
+    [AuthGuard],
+    (guard: AuthGuard) => {
+      authService.logger.next(true);
+      guard.canActivate().subscribe(res => {
+        expect(res).toBeTruthy();
+      });
+    }
+  ));
 });

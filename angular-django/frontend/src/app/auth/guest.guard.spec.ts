@@ -31,7 +31,7 @@ describe("GuestGuard", () => {
     authService = TestBed.get(AuthService);
   });
 
-  it("should return true if is logged in is false", inject(
+  it("CanActivate: should return true if is logged in is false", inject(
     [GuestGuard],
     (guard: GuestGuard) => {
       guard.canActivate().subscribe(res => {
@@ -40,10 +40,28 @@ describe("GuestGuard", () => {
     }
   ));
 
-  it("should return false if is logged in is true", inject(
+  it("CanActivate: should return false if is logged in is true", inject(
+    [GuestGuard],
+    (guard: GuestGuard) => {
+      guard.canLoad().subscribe(res => {
+        expect(res).toBeFalsy();
+      });
+    }
+  ));
+
+  it("CanLoad: should return true if is logged in is false", inject(
     [GuestGuard],
     (guard: GuestGuard) => {
       guard.canActivate().subscribe(res => {
+        expect(res).toBeTruthy();
+      });
+    }
+  ));
+
+  it("CanLoad: should return false if is logged in is true", inject(
+    [GuestGuard],
+    (guard: GuestGuard) => {
+      guard.canLoad().subscribe(res => {
         expect(res).toBeFalsy();
       });
     }

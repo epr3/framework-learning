@@ -7,12 +7,12 @@ import { GuestGuard } from "./guest.guard";
 
 const routes: Routes = [
   {
-    path: "login",
+    path: "auth/login",
     component: LoginComponent,
     canActivate: [GuestGuard]
   },
   {
-    path: "register",
+    path: "auth/register",
     component: RegisterComponent,
     canActivate: [GuestGuard]
   }

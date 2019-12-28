@@ -5,6 +5,7 @@ import { BooksListComponent } from "./books-list/books-list.component";
 const routes: Routes = [
   {
     path: "",
+    pathMatch: "full",
     component: BooksListComponent
   }
 ];

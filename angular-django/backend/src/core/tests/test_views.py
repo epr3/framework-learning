@@ -73,9 +73,13 @@ class ProfileTestCase(APITestCase):
             {
                 'name': 'test2',
                 'surname': 'test2',
-                'telephone': 'test2'
+                'telephone': 'test2',
+                'user': {
+                    'email': 'random@email.com'
+                }
             },
             format='json'
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['name'], 'test2')
+        self.assertEqual(response.data['user']['email'], 'random@email.com')

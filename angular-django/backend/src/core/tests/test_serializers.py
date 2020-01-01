@@ -1,13 +1,23 @@
 from django.test import TestCase
 
 from ..factories import UserFactory, RefreshTokenFactory, ProfileFactory
-from ..serializers import UserSerializer, RefreshTokenSerializer, ProfileSerializer
+from ..serializers import UserSerializer, RefreshTokenSerializer, ProfileSerializer, NestedUserSerializer
 
 
 class UserSerializerTestCase(TestCase):
     def setUp(self):
         self.user = UserFactory()
         self.serializer = UserSerializer(instance=self.user)
+
+    def test_contains_expected_fields(self):
+        data = self.serializer.data
+
+        self.assertCountEqual(data.keys(), ['email'])
+
+class NestedUserSerializerTestCase(TestCase):
+    def setUp(self):
+        self.user = UserFactory()
+        self.serializer = NestedUserSerializer(instance=self.user)
 
     def test_contains_expected_fields(self):
         data = self.serializer.data

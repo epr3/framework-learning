@@ -15,12 +15,31 @@ class UserSerializer(serializers.ModelSerializer):
         return user
 
 
+class NestedUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['email']
+
+
 class ProfileSerializer(serializers.ModelSerializer):
+    user = NestedUserSerializer()
+
     class Meta:
         model = Profile
         fields = ['name', 'surname', 'telephone', 'user']
-        read_only_fields = ['user']
-        depth = 1
+
+    def update(self, instance, validated_data):
+        user_data = validated_data.pop('user')
+        if not user_data:
+            raise User.DoesNotExist
+        user = instance.user
+        user.email = user_data.get('email')
+        instance.name = validated_data.get('name')
+        instance.surname = validated_data.get('surname')
+        instance.telephone = validated_data.get('telephone')
+        instance.save()
+        user.save()
+        return instance
 
 
 class RefreshTokenSerializer(serializers.ModelSerializer):

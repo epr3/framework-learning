@@ -1,13 +1,9 @@
-from datetime import timedelta
 from django.urls import reverse
-from django.utils import timezone
 from rest_framework import status
-from rest_framework.test import APITestCase, force_authenticate, APIRequestFactory
+from rest_framework.test import APITestCase
 
-from ..models import User, RefreshToken
-from ..factories import UserFactory, RefreshTokenFactory
-
-factory = APIRequestFactory()
+from ..models import User, RefreshToken, Profile
+from ..factories import UserFactory, RefreshTokenFactory, ProfileFactory
 
 
 class LoginTestCase(APITestCase):
@@ -53,7 +49,33 @@ class RefreshTokenTestCase(APITestCase):
 
     def test_get(self):
         url = reverse('refresh-token')
-        request = factory.get(url)
         self.client.cookies['refresh_token'] = self.refresh_token.token
         response = self.client.get(url, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+
+class ProfileTestCase(APITestCase):
+    def setUp(self):
+        self.user = UserFactory()
+        self.profile = ProfileFactory(user=self.user)
+
+    def test_get(self):
+        url = reverse('profile')
+        self.client.force_authenticate(user=self.user)
+        response = self.client.get(url, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_put(self):
+        url = reverse('profile')
+        self.client.force_authenticate(user=self.user)
+        response = self.client.put(
+            url,
+            {
+                'name': 'test2',
+                'surname': 'test2',
+                'telephone': 'test2'
+            },
+            format='json'
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['name'], 'test2')

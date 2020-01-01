@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import RefreshToken, User
+from .models import RefreshToken, User, Profile
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -13,6 +13,14 @@ class UserSerializer(serializers.ModelSerializer):
         user.set_password(validated_data["password"])
         user.save()
         return user
+
+
+class ProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Profile
+        fields = ['name', 'surname', 'telephone', 'user']
+        read_only_fields = ['user']
+        depth = 1
 
 
 class RefreshTokenSerializer(serializers.ModelSerializer):

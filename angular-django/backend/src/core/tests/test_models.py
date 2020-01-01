@@ -1,6 +1,6 @@
 from django.test import TestCase
 
-from ..factories import UserFactory, RefreshTokenFactory
+from ..factories import UserFactory, RefreshTokenFactory, ProfileFactory
 
 
 class UserModelTestCase(TestCase):
@@ -14,6 +14,35 @@ class UserModelTestCase(TestCase):
     def test_email_unique(self):
         is_unique = self.user._meta.get_field('email').unique
         self.assertEqual(is_unique, True)
+
+class ProfileModelTestCase(TestCase):
+    def setUp(self):
+        self.profile = ProfileFactory()
+
+    def test_name_field_label(self):
+        field_label = self.profile._meta.get_field('name').verbose_name
+        self.assertEqual(field_label, 'name')
+
+    def test_surname_field_label(self):
+        field_label = self.profile._meta.get_field('surname').verbose_name
+        self.assertEqual(field_label, 'surname')
+
+    def test_telephone_field_label(self):
+        field_label = self.profile._meta.get_field('telephone').verbose_name
+        self.assertEqual(field_label, 'telephone')
+
+    def test_telephone_length(self):
+        max_length = self.profile._meta.get_field('telephone').max_length
+        self.assertEqual(max_length, 30)
+
+    def test_name_length(self):
+        max_length = self.profile._meta.get_field('name').max_length
+        self.assertEqual(max_length, 50)
+
+    def test_surname_length(self):
+        max_length = self.profile._meta.get_field('surname').max_length
+        self.assertEqual(max_length, 50)
+
 
 
 class RefreshTokenModelTestCase(TestCase):

@@ -24,5 +24,6 @@ urlpatterns = [
     path('login/', core_views.Login.as_view(), name='login'),
     path('register/', core_views.Register.as_view(), name='register'),
     path('logout/', core_views.Logout.as_view(), name='logout'),
+    path('profile/', core_views.ProfileView.as_view(), name='profile'),
     path('test/', book_views.Hello.as_view())
 ]

@@ -1,7 +1,7 @@
 from django.test import TestCase
 
-from ..factories import UserFactory, RefreshTokenFactory
-from ..serializers import UserSerializer, RefreshTokenSerializer
+from ..factories import UserFactory, RefreshTokenFactory, ProfileFactory
+from ..serializers import UserSerializer, RefreshTokenSerializer, ProfileSerializer
 
 
 class UserSerializerTestCase(TestCase):
@@ -13,6 +13,18 @@ class UserSerializerTestCase(TestCase):
         data = self.serializer.data
 
         self.assertCountEqual(data.keys(), ['email'])
+
+
+class ProfileSerializerTestCase(TestCase):
+    def setUp(self):
+        self.profile = ProfileFactory()
+        self.serializer = ProfileSerializer(instance=self.profile)
+
+    def test_contains_expected_fields(self):
+        data = self.serializer.data
+
+        self.assertCountEqual(data.keys(),
+                            ['name', 'surname', 'telephone', 'user'])
 
 
 class RefreshTokenSerializerTestCase(TestCase):

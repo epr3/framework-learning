@@ -3,13 +3,16 @@ from datetime import timedelta
 from django.contrib.auth import authenticate
 from django.utils import timezone
 from django.conf import settings
+from django.http import Http404
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.authentication import BasicAuthentication
+from rest_framework.permissions import AllowAny
 from .authentication import JWTAuthentication
-from .models import RefreshToken
-from .serializers import RefreshTokenSerializer, UserSerializer
+from .models import RefreshToken, Profile
+from .serializers import RefreshTokenSerializer, UserSerializer, ProfileSerializer
+from .permissions import IsUser
 
 
 def create_response_tokens_from_user(user):
@@ -65,6 +68,7 @@ def create_response_tokens_from_user(user):
 
 class Login(APIView):
     authentication_classes = [BasicAuthentication]
+    permission_classes = [AllowAny]
 
     def post(self, request):
         user = authenticate(request, **request.data)
@@ -77,11 +81,15 @@ class Login(APIView):
 
 
 class Register(APIView):
+    authentication_classes = [BasicAuthentication]
+    permission_classes = [AllowAny]
+
     def post(self, request):
         user_serializer = UserSerializer(data=request.data)
         if user_serializer.is_valid():
             user_serializer.save()
             user = authenticate(request, **request.data)
+            Profile.objects.create(user=user)
             response = create_response_tokens_from_user(user)
             return response
         else:
@@ -89,6 +97,8 @@ class Register(APIView):
 
 
 class RefreshTokenView(APIView):
+    permission_classes = [AllowAny]
+
     def get(self, request):
         refresh_token = request.COOKIES.get('refresh_token')
         if refresh_token:
@@ -101,8 +111,6 @@ class RefreshTokenView(APIView):
 
 
 class Logout(APIView):
-    authentication_classes = [JWTAuthentication]
-
     def delete(self, request):
         cookie_token = request.COOKIES.get('refresh_token')
         if cookie_token is not None:
@@ -112,3 +120,26 @@ class Logout(APIView):
                 db_token.delete()
                 return Response('Logged out', status=status.HTTP_200_OK)
             return Response('Unauthorized', status=status.HTTP_401_UNAUTHORIZED)
+
+
+class ProfileView(APIView):
+    permission_classes = [IsUser]
+
+    def get_object(self, user):
+        try:
+            return Profile.objects.get(user=user)
+        except Profile.DoesNotExist:
+            raise Http404
+
+    def get(self, request):
+        profile = self.get_object(request.user.id)
+        serializer = ProfileSerializer(profile)
+        return Response(serializer.data)
+
+    def put(self, request):
+        profile = self.get_object(request.user.id)
+        serializer = ProfileSerializer(profile, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_422_UNPROCESSABLE_ENTITY)

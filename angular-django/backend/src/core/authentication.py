@@ -21,6 +21,8 @@ class JWTAuthentication(authentication.BaseAuthentication):
 
     def authenticate(self, request):
         header = self.get_header(request)
+        if not header:
+            return None
         try:
             token = header.decode('utf-8').split(' ')[1].encode()
             decoded_token = decode(token, settings.JWT_SECRET)

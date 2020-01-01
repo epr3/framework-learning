@@ -17,6 +17,13 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     objects = UserManager()
 
+class Profile(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
+    name = models.CharField(max_length=50, blank=True)
+    surname = models.CharField(max_length=50, blank=True)
+    telephone = models.CharField(max_length=30, blank=True)
+    user = models.OneToOneField(User, on_delete=models.DO_NOTHING)
+
 
 class RefreshToken(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid4, editable=False)

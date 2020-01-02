@@ -5,6 +5,7 @@ import { DebugElement } from "@angular/core";
 import { By } from "@angular/platform-browser";
 
 import { MatToolbarModule } from "@angular/material/toolbar";
+import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 
 import { AuthService } from "./../../auth/auth.service";
 import { HeaderComponent } from "./header.component";
@@ -19,7 +20,7 @@ describe("HeaderComponent", () => {
 
     logout(): Observable<object> {
       this.logger.next(false);
-      return of({})
+      return of({});
     }
   }
 
@@ -31,7 +32,7 @@ describe("HeaderComponent", () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [HeaderComponent],
-      imports: [MatToolbarModule, HttpClientTestingModule],
+      imports: [MatToolbarModule, FontAwesomeModule, HttpClientTestingModule],
       providers: [{ provide: AuthService, useValue: new FakeAuthService() }]
     }).compileComponents();
   }));
@@ -47,10 +48,10 @@ describe("HeaderComponent", () => {
     expect(component).toBeTruthy();
   });
 
-  it("should show two items when logged out", () => {
+  it("should show one item when logged out", () => {
     el = fixture.debugElement.queryAll(By.css(".actions a"));
 
-    expect(el.length).toBe(2);
+    expect(el.length).toBe(1);
   });
 
   it("should show two items when logged in", () => {

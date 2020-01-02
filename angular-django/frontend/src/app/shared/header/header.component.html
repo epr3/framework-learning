@@ -1,15 +1,23 @@
-<mat-toolbar>
+<mat-toolbar color="primary">
   <span routerLink="/" class="logo">Book store</span>
   <nav class="actions">
     <ng-container *ngIf="!isLoggedIn; then thenTemplate; else elseTemplate">
     </ng-container>
     <ng-template #thenTemplate>
-      <a routerLink="/login" routerLinkActive="active">Log in</a>
-      <a routerLink="/register" routerLinkActive="active">Register</a>
+      <a routerLink="/login" routerLinkActive="active">
+        <fa-icon [icon]="faSignInAlt"></fa-icon>
+        <span>Log in</span>
+      </a>
     </ng-template>
     <ng-template #elseTemplate>
-      <a routerLink="/profile" routerLinkActive="active">Profile</a>
-      <a id="logout" (click)="logout()">Log out</a>
+      <a routerLink="/profile" routerLinkActive="active">
+        <fa-icon [icon]="faUser"></fa-icon>
+        <span>Profile</span>
+      </a>
+      <a id="logout" (click)="logout()">
+        <fa-icon [icon]="faSignOutAlt"></fa-icon>
+        <span>Log out</span>
+      </a>
     </ng-template>
   </nav>
 </mat-toolbar>

@@ -1,7 +1,10 @@
-import { Observable } from "rxjs";
 import { Component, OnInit } from "@angular/core";
 
-import { map } from "rxjs/operators";
+import {
+  faUser,
+  faSignInAlt,
+  faSignOutAlt
+} from "@fortawesome/free-solid-svg-icons";
 
 import { AuthService } from "./../../auth/auth.service";
 
@@ -11,6 +14,9 @@ import { AuthService } from "./../../auth/auth.service";
   styleUrls: ["./header.component.scss"]
 })
 export class HeaderComponent implements OnInit {
+  faUser = faUser;
+  faSignInAlt = faSignInAlt;
+  faSignOutAlt = faSignOutAlt;
   isLoggedIn: boolean;
 
   constructor(private authService: AuthService) {}

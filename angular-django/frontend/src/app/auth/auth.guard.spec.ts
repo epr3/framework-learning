@@ -30,21 +30,38 @@ describe("AuthGuard", () => {
     authService = TestBed.get(AuthService);
   });
 
-  it("should return false if is logged in is false", inject(
+  it("CanActivate: should return true if is logged in is false", inject(
     [AuthGuard],
     (guard: AuthGuard) => {
       guard.canActivate().subscribe(res => {
+        expect(res).toBeTruthy();
+      });
+    }
+  ));
+
+  it("CanActivate: should return false if is logged in is true", inject(
+    [AuthGuard],
+    (guard: AuthGuard) => {
+      guard.canLoad().subscribe(res => {
         expect(res).toBeFalsy();
       });
     }
   ));
 
-  it("should return true if is logged in is true", inject(
+  it("CanLoad: should return true if is logged in is false", inject(
     [AuthGuard],
     (guard: AuthGuard) => {
-      authService.logger.next(true);
       guard.canActivate().subscribe(res => {
         expect(res).toBeTruthy();
+      });
+    }
+  ));
+
+  it("CanLoad: should return false if is logged in is true", inject(
+    [AuthGuard],
+    (guard: AuthGuard) => {
+      guard.canLoad().subscribe(res => {
+        expect(res).toBeFalsy();
       });
     }
   ));

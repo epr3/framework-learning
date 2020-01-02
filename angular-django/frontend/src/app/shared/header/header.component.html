@@ -4,11 +4,12 @@
     <ng-container *ngIf="!isLoggedIn; then thenTemplate; else elseTemplate">
     </ng-container>
     <ng-template #thenTemplate>
-      <a routerLink="/auth/login" routerLinkActive="active">Log in</a>
-      <a routerLink="/auth/register" routerLinkActive="active">Register</a>
+      <a routerLink="/login" routerLinkActive="active">Log in</a>
+      <a routerLink="/register" routerLinkActive="active">Register</a>
     </ng-template>
     <ng-template #elseTemplate>
-      <a (click)="logout()">Log out</a>
+      <a routerLink="/profile" routerLinkActive="active">Profile</a>
+      <a id="logout" (click)="logout()">Log out</a>
     </ng-template>
   </nav>
 </mat-toolbar>

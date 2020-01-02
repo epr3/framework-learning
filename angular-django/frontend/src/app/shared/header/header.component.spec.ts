@@ -53,20 +53,20 @@ describe("HeaderComponent", () => {
     expect(el.length).toBe(2);
   });
 
-  it("should show one item when logged in", () => {
+  it("should show two items when logged in", () => {
     authService.logger.next(true);
     fixture.detectChanges();
 
     el = fixture.debugElement.queryAll(By.css(".actions a"));
 
-    expect(el.length).toBe(1);
+    expect(el.length).toBe(2);
   });
 
   it("should call auth service logout when logout is pressed", () => {
     authService.logger.next(true);
     fixture.detectChanges();
 
-    el = fixture.debugElement.queryAll(By.css(".actions a"));
+    el = fixture.debugElement.queryAll(By.css("#logout"));
     const spy = jest.spyOn(authService, "logout");
     el[0].triggerEventHandler("click", null);
     fixture.detectChanges();

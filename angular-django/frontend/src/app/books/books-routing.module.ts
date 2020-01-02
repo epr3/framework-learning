@@ -1,12 +1,13 @@
-import { NgModule } from "@angular/core";
-import { Routes, RouterModule } from "@angular/router";
-import { BooksListComponent } from "./books-list/books-list.component";
+import { NgModule } from '@angular/core';
+import { Routes, RouterModule } from '@angular/router';
+
+import { BooksHomeComponent } from './books-home/books-home.component';
+
 
 const routes: Routes = [
   {
     path: "",
-    pathMatch: "full",
-    component: BooksListComponent
+    component: BooksHomeComponent
   }
 ];
 
@@ -14,4 +15,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
-export class BooksRoutingModule {}
+export class BooksRoutingModule { }

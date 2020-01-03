@@ -5,6 +5,7 @@ import { DebugElement } from "@angular/core";
 import { By } from "@angular/platform-browser";
 
 import { MatToolbarModule } from "@angular/material/toolbar";
+import { MatButtonModule } from "@angular/material/button";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 
 import { AuthService } from "./../../auth/auth.service";
@@ -32,7 +33,12 @@ describe("HeaderComponent", () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [HeaderComponent],
-      imports: [MatToolbarModule, FontAwesomeModule, HttpClientTestingModule],
+      imports: [
+        MatToolbarModule,
+        MatButtonModule,
+        FontAwesomeModule,
+        HttpClientTestingModule
+      ],
       providers: [{ provide: AuthService, useValue: new FakeAuthService() }]
     }).compileComponents();
   }));

@@ -4,20 +4,20 @@
     <ng-container *ngIf="!isLoggedIn; then thenTemplate; else elseTemplate">
     </ng-container>
     <ng-template #thenTemplate>
-      <a routerLink="/login" routerLinkActive="active">
+      <a mat-raised-button routerLink="/login" routerLinkActive="active">
         <fa-icon [icon]="faSignInAlt"></fa-icon>
         <span>Log in</span>
       </a>
     </ng-template>
     <ng-template #elseTemplate>
-      <a routerLink="/profile" routerLinkActive="active">
+      <a mat-raised-button routerLink="/profile" routerLinkActive="active">
         <fa-icon [icon]="faUser"></fa-icon>
         <span>Profile</span>
       </a>
-      <a id="logout" (click)="logout()">
+      <button mat-raised-button id="logout" (click)="logout()">
         <fa-icon [icon]="faSignOutAlt"></fa-icon>
         <span>Log out</span>
-      </a>
+      </button>
     </ng-template>
   </nav>
 </mat-toolbar>

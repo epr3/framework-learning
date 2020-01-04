@@ -18,6 +18,8 @@ describe("TokenInterceptorService", () => {
       return this.logger.asObservable();
     }
 
+    deleteAuth() {}
+
     getAuth() {
       return "test";
     }
@@ -92,6 +94,24 @@ describe("TokenInterceptorService", () => {
       expect(req.request.method).toEqual("POST");
 
       req.flush({ foo: "bar" });
+      httpMock.verify();
+    }
+  ));
+
+  it("should throw error if the url is refresh", inject(
+    [HttpClient, HttpTestingController],
+    (http: HttpClient, httpMock: HttpTestingController) => {
+      authService.deleteAuth = jest.fn();
+
+      http.post("/refresh", { test: "test" }).subscribe();
+
+      httpMock.expectOne("/refresh").error(new ErrorEvent("Forbidden"), {
+        status: 403,
+        statusText: "Forbidden"
+      });
+
+      expect(authService.deleteAuth).toHaveBeenCalled();
+
       httpMock.verify();
     }
   ));

@@ -66,6 +66,7 @@ export class TokenInterceptorService implements HttpInterceptor {
     );
   }
 
+  /* istanbul ignore next */
   private addToken(request: HttpRequest<any>, token: string) {
     return request.clone({
       setHeaders: {
@@ -74,6 +75,7 @@ export class TokenInterceptorService implements HttpInterceptor {
     });
   }
 
+  /* istanbul ignore next */
   private handle403Error(request: HttpRequest<any>, next: HttpHandler) {
     if (!this.isRefreshing) {
       this.isRefreshing = true;

@@ -25,7 +25,7 @@ export class AuthService {
   ) {}
 
   private log(message: string) {
-    console.log(message);
+    console.log(`AuthService: ${message}`);
     this.messageService.add(`AuthService: ${message}`);
   }
 
@@ -42,6 +42,10 @@ export class AuthService {
     };
   }
 
+  getAuth() {
+    return localStorage.getItem("bookStore:access");
+  }
+
   storeAuth(accessToken: string) {
     localStorage.setItem("bookStore:access", accessToken);
     this.logger.next(true);
@@ -54,6 +58,19 @@ export class AuthService {
 
   isLoggedIn(): Observable<boolean> {
     return this.logger.asObservable();
+  }
+
+  refreshToken(): Observable<object> {
+    return this.http
+      .get<{ access_token: string }>(`${this.url}/refresh/`, this.httpOptions)
+      .pipe(
+        tap(() => this.log("refreshed token")),
+        tap(({ access_token }) => {
+          this.storeAuth(access_token);
+        }),
+        catchError(this.handleError<object>("refresh token")),
+        shareReplay()
+      );
   }
 
   login({

@@ -36,13 +36,18 @@ export class TokenInterceptorService implements HttpInterceptor {
     request: HttpRequest<any>,
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
-    if (this.authService.isLoggedIn) {
+    if (
+      this.authService.isLoggedIn &&
+      !request.url.includes("refresh") &&
+      !request.url.includes("login") &&
+      !request.url.includes("register")
+    ) {
       request = this.addToken(request, this.authService.getAuth());
     }
 
     return next.handle(request).pipe(
       catchError(error => {
-        if (request.url.includes("login") && request.url.includes("register")) {
+        if (request.url.includes("login") || request.url.includes("register")) {
           return throwError(error);
         }
 
@@ -82,7 +87,7 @@ export class TokenInterceptorService implements HttpInterceptor {
             return throwError(new Error("invalid token"));
           }
           this.refreshTokenSubject.next(token);
-          return next.handle(this.addToken(request, token));
+          return next.handle(this.addToken(request, token.access_token));
         })
       );
     } else {
@@ -91,7 +96,7 @@ export class TokenInterceptorService implements HttpInterceptor {
         filter(token => token != null),
         take(1),
         switchMap(jwt => {
-          return next.handle(this.addToken(request, jwt));
+          return next.handle(this.addToken(request, jwt.access_token));
         })
       );
     }

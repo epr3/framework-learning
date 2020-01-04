@@ -97,6 +97,7 @@ class Register(APIView):
 
 
 class RefreshTokenView(APIView):
+    authentication_classes = []
     permission_classes = [AllowAny]
 
     def get(self, request):

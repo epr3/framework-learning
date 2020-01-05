@@ -4,7 +4,7 @@ from django.contrib.auth.models import Group
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 
-from .models import User, RefreshToken
+from .models import User, RefreshToken, Profile
 
 
 class UserAdmin(BaseUserAdmin):
@@ -38,6 +38,11 @@ class RefreshTokenAdmin(admin.ModelAdmin):
     list_display = ('id', 'token', 'expiry_date', 'user')
 
 
+class ProfileAdmin(admin.ModelAdmin):
+    list_display = ('id', 'name', 'surname', 'telephone', 'user')
+
+
 # Now register the new UserAdmin...
 admin.site.register(User, UserAdmin)
 admin.site.register(RefreshToken, RefreshTokenAdmin)
+admin.site.register(Profile, ProfileAdmin)

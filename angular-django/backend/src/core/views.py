@@ -99,10 +99,16 @@ class RefreshTokenView(APIView):
     authentication_classes = []
     permission_classes = [AllowAny]
 
+    def get_object(self, token):
+        try:
+            return RefreshToken.objects.get(token=token)
+        except RefreshToken.DoesNotExist:
+            raise Http404
+
     def get(self, request):
         refresh_token = request.COOKIES.get('refresh_token')
         if refresh_token:
-            db_token = RefreshToken.objects.get(token=refresh_token)
+            db_token = self.get_object(refresh_token)
             if db_token is not None:
                 user = db_token.user
                 response = create_response_tokens_from_user(user)

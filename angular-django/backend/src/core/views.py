@@ -8,7 +8,7 @@ from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.authentication import BasicAuthentication
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from .authentication import JWTAuthentication
 from .models import RefreshToken, Profile
 from .serializers import RefreshTokenSerializer, UserSerializer, ProfileSerializer, LoginSerializer, RegisterSerializer
@@ -129,7 +129,7 @@ class Logout(APIView):
 
 
 class ProfileView(APIView):
-    permission_classes = [IsUser]
+    permission_classes = [IsAuthenticated, IsUser]
 
     def get_object(self, user):
         try:

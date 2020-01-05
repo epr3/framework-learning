@@ -67,15 +67,10 @@ export class ProfileHomeComponent implements OnInit {
     console.log(this.profileDataForm.value);
   }
 
-  startEditing() {
-    this.isProfileDataEditing = true;
-    Object.values(this.profileDataForm.controls).forEach(item => item.enable());
-  }
-
-  cancelEditing() {
-    this.isProfileDataEditing = false;
+  toggleEditing() {
+    this.isProfileDataEditing = !this.isProfileDataEditing;
     Object.values(this.profileDataForm.controls).forEach(item =>
-      item.disable()
+      this.isProfileDataEditing ? item.enable() : item.disable()
     );
   }
 }

@@ -2,27 +2,43 @@ from rest_framework import serializers
 from .models import RefreshToken, User, Profile
 
 
-class UserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ['email', 'password']
-        extra_kwargs = {'password': {'write_only': True}}
+class LoginSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    password = serializers.CharField(max_length=128)
 
-    def create(self, validated_data):
-        user = User(email=validated_data["email"])
-        user.set_password(validated_data["password"])
+
+class RegisterSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    password = serializers.CharField(max_length=128)
+    password_confirmation = serializers.CharField(max_length=128)
+
+    def validate_email(self, email):
+        existing = User.objects.filter(email=email).first()
+        if existing:
+            raise serializers.ValidationError(
+                "Someone with that email address has already registered")
+        return email
+
+    def validate(self, data):
+        if data.get('password') != data.get('password_confirmation'):
+            raise serializers.ValidationError("The passwords do no match")
+        return data
+
+    def save(self):
+        user = User(email=self.validated_data["email"])
+        user.set_password(self.validated_data["password"])
         user.save()
         return user
 
 
-class NestedUserSerializer(serializers.ModelSerializer):
+class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['email']
 
 
 class ProfileSerializer(serializers.ModelSerializer):
-    user = NestedUserSerializer()
+    user = UserSerializer()
 
     class Meta:
         model = Profile

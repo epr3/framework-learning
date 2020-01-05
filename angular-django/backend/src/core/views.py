@@ -11,7 +11,7 @@ from rest_framework.authentication import BasicAuthentication
 from rest_framework.permissions import AllowAny
 from .authentication import JWTAuthentication
 from .models import RefreshToken, Profile
-from .serializers import RefreshTokenSerializer, UserSerializer, ProfileSerializer
+from .serializers import RefreshTokenSerializer, UserSerializer, ProfileSerializer, LoginSerializer, RegisterSerializer
 from .permissions import IsUser
 
 
@@ -51,19 +51,17 @@ def create_response_tokens_from_user(user):
             'expiry_date': timezone.now() + timedelta(
                 seconds=settings.JWT_REFRESH_EXP_DELTA_SECONDS)
         })
-    if serializer.is_valid():
-        serializer.save()
-        response = Response({'access_token': access_token},
-                            status=status.HTTP_200_OK)
-        response.set_cookie(
-            key='refresh_token',
-            value=refresh_token.decode('utf-8'),
-            expires=timezone.now() +
-            timedelta(seconds=settings.JWT_REFRESH_EXP_DELTA_SECONDS),
-            httponly=True)
-        return response
-    else:
-        return Response(serializer.errors, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    serializer.is_valid(raise_exception=True)
+    serializer.save()
+    response = Response({'access_token': access_token},
+                        status=status.HTTP_200_OK)
+    response.set_cookie(
+        key='refresh_token',
+        value=refresh_token.decode('utf-8'),
+        expires=timezone.now() +
+        timedelta(seconds=settings.JWT_REFRESH_EXP_DELTA_SECONDS),
+        httponly=True)
+    return response
 
 
 class Login(APIView):
@@ -71,7 +69,9 @@ class Login(APIView):
     permission_classes = [AllowAny]
 
     def post(self, request):
-        user = authenticate(request, **request.data)
+        serializer = LoginSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = authenticate(request, **serializer.validated_data)
         if user is not None:
             response = create_response_tokens_from_user(user)
             return response
@@ -85,15 +85,14 @@ class Register(APIView):
     permission_classes = [AllowAny]
 
     def post(self, request):
-        user_serializer = UserSerializer(data=request.data)
-        if user_serializer.is_valid():
-            user_serializer.save()
-            user = authenticate(request, **request.data)
-            Profile.objects.create(user=user)
-            response = create_response_tokens_from_user(user)
-            return response
-        else:
-            return Response(user_serializer.errors, status=status.HTTP_422_UNPROCESSABLE_ENTITY)
+        serializer = RegisterSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        user = authenticate(
+            request, email=request.data['email'], password=request.data['password'])
+        Profile.objects.create(user=user)
+        response = create_response_tokens_from_user(user)
+        return response
 
 
 class RefreshTokenView(APIView):

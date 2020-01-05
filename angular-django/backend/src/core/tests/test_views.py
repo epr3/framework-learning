@@ -14,6 +14,8 @@ class LoginTestCase(APITestCase):
         url = reverse('login')
         data = {'email': self.user.email, 'password': '12345678'}
         response = self.client.post(url, data, format='json')
+        # import pdb
+        # pdb.set_trace()
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(RefreshToken.objects.count(), 1)
 
@@ -35,11 +37,28 @@ class LogoutTestCase(APITestCase):
 class RegisterTestCase(APITestCase):
     def test_post(self):
         url = reverse('register')
-        data = {'email': 'test@test.com', 'password': '12345678'}
+        data = {
+            'email': 'test25@test.com',
+            'password': '12345678',
+            'password_confirmation': '12345678'
+        }
         response = self.client.post(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(User.objects.count(), 1)
         self.assertEqual(RefreshToken.objects.count(), 1)
+
+    def test_post_fail(self):
+        url = reverse('register')
+        data = {
+            'email': 'test25',
+            'password': '12345678',
+            'password_confirmation': '12345678'
+        }
+        response = self.client.post(url, data, format='json')
+        self.assertEqual(response.status_code,
+                         status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(User.objects.count(), 0)
+        self.assertEqual(RefreshToken.objects.count(), 0)
 
 
 class RefreshTokenTestCase(APITestCase):

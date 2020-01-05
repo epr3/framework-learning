@@ -13,6 +13,7 @@ import { LoginComponent } from "./login/login.component";
 import { RegisterComponent } from "./register/register.component";
 
 import { TokenInterceptorService } from "../token-interceptor.service";
+import { AuthService } from "./auth.service";
 
 @NgModule({
   declarations: [LoginComponent, RegisterComponent],
@@ -21,7 +22,8 @@ import { TokenInterceptorService } from "../token-interceptor.service";
       provide: HTTP_INTERCEPTORS,
       useClass: TokenInterceptorService,
       multi: true
-    }
+    },
+    AuthService
   ],
   imports: [
     CommonModule,

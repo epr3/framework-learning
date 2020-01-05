@@ -9,8 +9,11 @@ import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { HeaderComponent } from "./header/header.component";
 import { FooterComponent } from "./footer/footer.component";
 
+import { AuthService } from "./../auth/auth.service";
+
 @NgModule({
   declarations: [HeaderComponent, FooterComponent],
+  providers: [AuthService],
   imports: [
     CommonModule,
     RouterModule,

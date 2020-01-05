@@ -59,7 +59,6 @@ export class TokenInterceptorService implements HttpInterceptor {
         if (error instanceof HttpErrorResponse && error.status === 403) {
           return this.handle403Error(request, next);
         } else {
-          this.authService.deleteAuth();
           return throwError(error);
         }
       })

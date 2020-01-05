@@ -1,5 +1,7 @@
 import { of, BehaviorSubject, Observable } from "rxjs";
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+import { Router } from "@angular/router";
+import { RouterTestingModule } from "@angular/router/testing";
 import { HttpClientTestingModule } from "@angular/common/http/testing";
 import { DebugElement } from "@angular/core";
 import { By } from "@angular/platform-browser";
@@ -29,6 +31,7 @@ describe("HeaderComponent", () => {
   let fixture: ComponentFixture<HeaderComponent>;
   let authService: FakeAuthService;
   let el: DebugElement[];
+  let router: Router;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -37,6 +40,7 @@ describe("HeaderComponent", () => {
         MatToolbarModule,
         MatButtonModule,
         FontAwesomeModule,
+        RouterTestingModule.withRoutes([]),
         HttpClientTestingModule
       ],
       providers: [{ provide: AuthService, useValue: new FakeAuthService() }]
@@ -47,6 +51,7 @@ describe("HeaderComponent", () => {
     fixture = TestBed.createComponent(HeaderComponent);
     component = fixture.componentInstance;
     authService = TestBed.get(AuthService);
+    router = TestBed.get(Router);
     fixture.detectChanges();
   });
 
@@ -70,6 +75,7 @@ describe("HeaderComponent", () => {
   });
 
   it("should call auth service logout when logout is pressed", () => {
+    router.navigateByUrl = jest.fn();
     authService.logger.next(true);
     fixture.detectChanges();
 
@@ -80,5 +86,6 @@ describe("HeaderComponent", () => {
 
     expect(spy).toHaveBeenCalled();
     expect(component.isLoggedIn).toBeFalsy();
+    expect(router.navigateByUrl).toHaveBeenCalledWith("/");
   });
 });

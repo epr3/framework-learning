@@ -1,5 +1,8 @@
 import { TestBed, inject } from "@angular/core/testing";
-import { HttpClientModule } from "@angular/common/http";
+
+import { Router } from "@angular/router";
+import { RouterTestingModule } from "@angular/router/testing";
+import { HttpClientTestingModule } from "@angular/common/http/testing";
 
 import { BehaviorSubject, Observable } from "rxjs";
 
@@ -17,6 +20,7 @@ describe("AuthGuard", () => {
   }
 
   let authService: FakeAuthService;
+  let router: Router;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -24,22 +28,56 @@ describe("AuthGuard", () => {
         { provide: AuthService, useValue: new FakeAuthService() },
         AuthGuard
       ],
-      imports: [HttpClientModule]
+      imports: [RouterTestingModule.withRoutes([]), HttpClientTestingModule]
     });
 
     authService = TestBed.get(AuthService);
+    router = TestBed.get(Router);
   });
 
-  it("CanActivate: should return true if is logged in is false", inject(
+  it("CanActivate: should return true if is logged in is true", inject(
     [AuthGuard],
     (guard: AuthGuard) => {
+      authService.logger.next(true);
       guard.canActivate().subscribe(res => {
         expect(res).toBeTruthy();
       });
     }
   ));
 
-  it("CanActivate: should return false if is logged in is true", inject(
+  it("CanActivate: should return false if is logged in is false", inject(
+    [AuthGuard],
+    (guard: AuthGuard) => {
+      router.navigateByUrl = jest.fn();
+      guard.canActivate().subscribe(res => {
+        expect(res).toBeFalsy();
+        expect(router.navigateByUrl).toHaveBeenCalledWith("/");
+      });
+    }
+  ));
+
+  it("CanActivateChild: should return true if is logged in is true", inject(
+    [AuthGuard],
+    (guard: AuthGuard) => {
+      authService.logger.next(true);
+      guard.canActivateChild().subscribe(res => {
+        expect(res).toBeTruthy();
+      });
+    }
+  ));
+
+  it("CanActivateChild: should return false if is logged in is false", inject(
+    [AuthGuard],
+    (guard: AuthGuard) => {
+      router.navigateByUrl = jest.fn();
+      guard.canActivateChild().subscribe(res => {
+        expect(res).toBeFalsy();
+        expect(router.navigateByUrl).toHaveBeenCalledWith("/");
+      });
+    }
+  ));
+
+  it("CanLoad: should return false if is logged in is false", inject(
     [AuthGuard],
     (guard: AuthGuard) => {
       guard.canLoad().subscribe(res => {
@@ -48,20 +86,12 @@ describe("AuthGuard", () => {
     }
   ));
 
-  it("CanLoad: should return true if is logged in is false", inject(
+  it("CanLoad: should return true if is logged in is true", inject(
     [AuthGuard],
     (guard: AuthGuard) => {
-      guard.canActivate().subscribe(res => {
-        expect(res).toBeTruthy();
-      });
-    }
-  ));
-
-  it("CanLoad: should return false if is logged in is true", inject(
-    [AuthGuard],
-    (guard: AuthGuard) => {
+      authService.logger.next(true);
       guard.canLoad().subscribe(res => {
-        expect(res).toBeFalsy();
+        expect(res).toBeTruthy();
       });
     }
   ));

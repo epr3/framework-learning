@@ -1,5 +1,10 @@
 import { Injectable } from "@angular/core";
-import { CanActivate, CanLoad } from "@angular/router";
+import {
+  CanActivate,
+  CanLoad,
+  CanActivateChild,
+  Router
+} from "@angular/router";
 import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
 
@@ -8,8 +13,8 @@ import { AuthService } from "./auth.service";
 @Injectable({
   providedIn: "root"
 })
-export class AuthGuard implements CanActivate, CanLoad {
-  constructor(private authService: AuthService) {}
+export class AuthGuard implements CanActivate, CanLoad, CanActivateChild {
+  constructor(private authService: AuthService, private router: Router) {}
 
   private isLoggedIn(): Observable<boolean> {
     return this.authService.isLoggedIn().pipe(map(res => !!res));
@@ -20,6 +25,20 @@ export class AuthGuard implements CanActivate, CanLoad {
   }
 
   canActivate(): Observable<boolean> {
+    this.canLoad().subscribe(res => {
+      if (!res) {
+        this.router.navigateByUrl("/");
+      }
+    });
+    return this.canLoad();
+  }
+
+  canActivateChild(): Observable<boolean> {
+    this.canLoad().subscribe(res => {
+      if (!res) {
+        this.router.navigateByUrl("/");
+      }
+    });
     return this.canLoad();
   }
 }

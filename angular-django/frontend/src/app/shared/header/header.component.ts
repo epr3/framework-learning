@@ -1,5 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 
+import { Router } from "@angular/router";
+
 import {
   faUser,
   faSignInAlt,
@@ -19,7 +21,7 @@ export class HeaderComponent implements OnInit {
   faSignOutAlt = faSignOutAlt;
   isLoggedIn: boolean;
 
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService, private router: Router) {}
 
   ngOnInit() {
     this.authService.isLoggedIn().subscribe(res => {
@@ -28,6 +30,8 @@ export class HeaderComponent implements OnInit {
   }
 
   logout() {
-    this.authService.logout().subscribe();
+    this.authService.logout().subscribe(() => {
+      this.router.navigateByUrl("/");
+    });
   }
 }

@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { CanActivate, CanLoad } from "@angular/router";
+import { CanActivate, CanLoad, Router } from "@angular/router";
 import { Observable } from "rxjs";
 import { map } from "rxjs/operators";
 
@@ -9,17 +9,22 @@ import { AuthService } from "./auth.service";
   providedIn: "root"
 })
 export class GuestGuard implements CanActivate, CanLoad {
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService, private router: Router) {}
 
-  private isLoggedIn(): Observable<boolean> {
+  private isNotLoggedIn(): Observable<boolean> {
     return this.authService.isLoggedIn().pipe(map(res => !res));
   }
 
   canLoad(): Observable<boolean> {
-    return this.isLoggedIn();
+    return this.isNotLoggedIn();
   }
 
   canActivate(): Observable<boolean> {
+    this.canLoad().subscribe(res => {
+      if (!res) {
+        this.router.navigateByUrl("/");
+      }
+    });
     return this.canLoad();
   }
 }

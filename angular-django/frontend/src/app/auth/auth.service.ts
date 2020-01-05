@@ -1,46 +1,23 @@
 import { Injectable } from "@angular/core";
-import { HttpClient, HttpHeaders } from "@angular/common/http";
-import { Observable, of, BehaviorSubject } from "rxjs";
-import { catchError, map, tap, shareReplay } from "rxjs/operators";
+import { HttpHeaders } from "@angular/common/http";
+import { Observable, BehaviorSubject } from "rxjs";
+import { catchError, tap, shareReplay } from "rxjs/operators";
 
-import { MessageService } from "./../message.service";
+import { BaseHttp } from "../base-http";
 
 @Injectable({
   providedIn: "root"
 })
-export class AuthService {
-  private url = "http://localhost:8000";
+export class AuthService extends BaseHttp {
   private logger = new BehaviorSubject<boolean>(
     !!localStorage.getItem("bookStore:access")
   );
+  service = "Auth Service";
 
   httpOptions = {
     headers: new HttpHeaders({ "Content-Type": "application/json" }),
     withCredentials: true
   };
-
-  constructor(
-    private http: HttpClient,
-    private messageService: MessageService
-  ) {}
-
-  private log(message: string) {
-    console.log(`AuthService: ${message}`);
-    this.messageService.add(`AuthService: ${message}`);
-  }
-
-  private handleError<T>(operation = "operation", result?: T) {
-    return (error: any): Observable<T> => {
-      // TODO: send the error to remote logging infrastructure
-      console.error(error); // log to console instead
-
-      // TODO: better job of transforming error for user consumption
-      this.log(`${operation} failed: ${error.message}`);
-
-      // Let the app keep running by returning an empty result.
-      return of(result as T);
-    };
-  }
 
   getAuth() {
     return localStorage.getItem("bookStore:access");

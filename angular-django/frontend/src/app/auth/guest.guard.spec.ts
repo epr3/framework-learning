@@ -1,6 +1,8 @@
 import { TestBed, inject } from "@angular/core/testing";
 
-import { HttpClientModule } from "@angular/common/http";
+import { Router } from "@angular/router";
+import { RouterTestingModule } from "@angular/router/testing";
+import { HttpClientTestingModule } from "@angular/common/http/testing";
 
 import { BehaviorSubject, Observable } from "rxjs";
 
@@ -18,6 +20,7 @@ describe("GuestGuard", () => {
   }
 
   let authService: FakeAuthService;
+  let router: Router;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -25,10 +28,11 @@ describe("GuestGuard", () => {
         { provide: AuthService, useValue: new FakeAuthService() },
         GuestGuard
       ],
-      imports: [HttpClientModule]
+      imports: [RouterTestingModule.withRoutes([]), HttpClientTestingModule]
     });
 
     authService = TestBed.get(AuthService);
+    router = TestBed.get(Router);
   });
 
   it("CanActivate: should return true if is logged in is false", inject(
@@ -43,8 +47,11 @@ describe("GuestGuard", () => {
   it("CanActivate: should return false if is logged in is true", inject(
     [GuestGuard],
     (guard: GuestGuard) => {
-      guard.canLoad().subscribe(res => {
+      router.navigateByUrl = jest.fn();
+      authService.logger.next(true);
+      guard.canActivate().subscribe(res => {
         expect(res).toBeFalsy();
+        expect(router.navigateByUrl).toHaveBeenCalledWith("/");
       });
     }
   ));
@@ -52,7 +59,7 @@ describe("GuestGuard", () => {
   it("CanLoad: should return true if is logged in is false", inject(
     [GuestGuard],
     (guard: GuestGuard) => {
-      guard.canActivate().subscribe(res => {
+      guard.canLoad().subscribe(res => {
         expect(res).toBeTruthy();
       });
     }
@@ -61,6 +68,7 @@ describe("GuestGuard", () => {
   it("CanLoad: should return false if is logged in is true", inject(
     [GuestGuard],
     (guard: GuestGuard) => {
+      authService.logger.next(true);
       guard.canLoad().subscribe(res => {
         expect(res).toBeFalsy();
       });

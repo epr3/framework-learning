@@ -73,6 +73,31 @@ export class AuthService extends BaseHttp {
       );
   }
 
+  register({
+    email,
+    password,
+    password_confirmation
+  }: {
+    email: string;
+    password: string;
+    password_confirmation: string;
+  }): Observable<object> {
+    return this.http
+      .post<{ access_token: string }>(
+        `${this.url}/register/`,
+        { email, password, password_confirmation },
+        this.httpOptions
+      )
+      .pipe(
+        tap(() => this.log("registered")),
+        tap(({ access_token }) => {
+          this.storeAuth(access_token);
+        }),
+        catchError(this.handleError<object>("register")),
+        shareReplay()
+      );
+  }
+
   logout(): Observable<object> {
     return this.http
       .delete(`${this.url}/logout/`, {

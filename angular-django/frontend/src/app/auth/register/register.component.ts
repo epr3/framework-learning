@@ -24,10 +24,12 @@ export class RegisterComponent implements OnInit {
   ngOnInit() {}
 
   onSubmit() {
-    this.authService.register(this.registerForm.value).subscribe(res => {
-      if (res) {
-        this.router.navigateByUrl("/");
-      }
-    });
+    if (this.registerForm.valid) {
+      this.authService.register(this.registerForm.value).subscribe(res => {
+        if (res) {
+          this.router.navigateByUrl("/");
+        }
+      });
+    }
   }
 }

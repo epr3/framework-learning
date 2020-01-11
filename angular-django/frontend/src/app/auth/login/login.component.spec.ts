@@ -85,7 +85,7 @@ describe("LoginComponent", () => {
     expect(errors["email"]).toBeFalsy();
   });
 
-  it("submitting a form emits a user", () => {
+  it("submitting a form navigates to home", () => {
     router.navigateByUrl = jest.fn();
     expect(component.loginForm.valid).toBeFalsy();
     component.loginForm.controls["email"].setValue("test@test.com");

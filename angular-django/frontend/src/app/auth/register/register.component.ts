@@ -2,6 +2,8 @@ import { Component, OnInit } from "@angular/core";
 import { FormBuilder, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
 
+import { CustomValidators } from "./../../custom-validators";
+
 import { AuthService } from "./../auth.service";
 
 @Component({
@@ -10,11 +12,20 @@ import { AuthService } from "./../auth.service";
   styleUrls: ["./register.component.scss"]
 })
 export class RegisterComponent implements OnInit {
-  registerForm = this.fb.group({
-    email: ["", [Validators.required, Validators.email]],
-    password: ["", Validators.required],
-    password_confirmation: ["", Validators.required]
-  });
+  registerForm = this.fb.group(
+    {
+      email: ["", [Validators.required, Validators.email]],
+      password: ["", Validators.required],
+      password_confirmation: ["", Validators.required]
+    },
+    {
+      validators: CustomValidators.mustMatch(
+        "password",
+        "password_confirmation"
+      )
+    }
+  );
+
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,

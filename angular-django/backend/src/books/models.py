@@ -4,11 +4,15 @@ from core.models import Profile
 
 
 class Category(models.Model):
+    class Meta:
+        verbose_name_plural = "Categories"
     id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
     name = models.CharField(max_length=255)
 
 
 class Series(models.Model):
+    class Meta:
+        verbose_name_plural = "Series"
     id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
     name = models.CharField(max_length=255)
 
@@ -25,11 +29,6 @@ class Language(models.Model):
     language_code = models.CharField(max_length=2)
 
 
-class BookCover(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
-    cover = models.ImageField()
-
-
 class Book(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
     name = models.CharField(max_length=255)
@@ -39,8 +38,8 @@ class Book(models.Model):
     isbn_10 = models.CharField(max_length=10)
     pages = models.IntegerField()
     price = models.FloatField()
+    cover = models.ImageField(default=None)
     book_type = models.CharField(max_length=100)
-    book_cover = models.OneToOneField(BookCover, on_delete=models.DO_NOTHING)
     language = models.ForeignKey(Language, on_delete=models.CASCADE)
     series = models.ForeignKey(Series, on_delete=models.DO_NOTHING, null=True)
     author = models.ForeignKey(Author, on_delete=models.CASCADE)
@@ -48,7 +47,13 @@ class Book(models.Model):
 
 
 class Review(models.Model):
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['user', 'book'], name='unique_review_user'
+            )
+        ]
     id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
     user = models.ForeignKey(Profile, on_delete=models.CASCADE)
-    grade = models.IntegerField(choices=list(zip(range(1, 5), range(1, 5))))
+    grade = models.IntegerField(choices=list(zip(range(1, 6), range(1, 6))))
     book = models.ForeignKey(Book, on_delete=models.CASCADE)

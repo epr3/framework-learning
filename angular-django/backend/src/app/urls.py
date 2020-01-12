@@ -25,5 +25,6 @@ urlpatterns = [
     path('register/', core_views.Register.as_view(), name='register'),
     path('logout/', core_views.Logout.as_view(), name='logout'),
     path('profile/', core_views.ProfileView.as_view(), name='profile'),
-    path('test/', book_views.Hello.as_view())
+    path('books/', book_views.BookListView.as_view(), name='book-list'),
+    path('books/<uuid:id>/', book_views.BookDetailView.as_view(), name='book-detail')
 ]

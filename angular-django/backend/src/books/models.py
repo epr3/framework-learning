@@ -34,6 +34,7 @@ class Book(models.Model):
     name = models.CharField(max_length=255)
     description = models.CharField(max_length=255)
     publishing_house = models.CharField(max_length=255)
+    publishing_date = models.DateField()
     isbn_13 = models.CharField(max_length=13)
     isbn_10 = models.CharField(max_length=10)
     pages = models.IntegerField()

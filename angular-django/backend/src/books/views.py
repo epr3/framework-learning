@@ -1,10 +1,13 @@
-from rest_framework import status
-from rest_framework.views import APIView
-from rest_framework.response import Response
-
-from core.authentication import JWTAuthentication
+from rest_framework import generics
+from .models import Book
+from .serializers import BookSerializer
 
 
-class Hello(APIView):
-    def get(self, request):
-        return Response('OK', status=status.HTTP_200_OK)
+class BookListView(generics.ListAPIView):
+    queryset = Book.objects.all()
+    serializer_class = BookSerializer
+
+
+class BookDetailView(generics.RetrieveAPIView):
+    queryset = Book.objects.all()
+    serializer_class = BookSerializer

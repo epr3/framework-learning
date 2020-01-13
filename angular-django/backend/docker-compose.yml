@@ -1,0 +1,57 @@
+version: "3.5"
+
+services:
+  database:
+    container_name: book-store-api-mysql
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_DATABASE: book-store
+      MYSQL_USER: book-store
+      MYSQL_PASSWORD: secret
+    volumes:
+      - mysql:/var/lib/mysql
+    ports:
+      - 33006:3306
+
+  redis:
+    container_name: book-store-api-redis
+    image: redis:5
+
+  mailhog:
+    container_name: book-store-api-mailhog
+    image: mailhog/mailhog
+    ports:
+      - 1025:1025
+      - 85:8025
+
+  redis-commander:
+    container_name: book-store-api-redis-commander
+    image: rediscommander/redis-commander:latest
+    restart: always
+    environment:
+      REDIS_HOSTS: >
+        default:redis:6379:0,
+        cache:redis:6379:1,
+        session:redis:6379:2,
+        queue:redis:6379:3
+    ports:
+      - 84:8081
+
+  phpmyadmin:
+    container_name: book-store-api-phpmyadmin
+    depends_on:
+      - database
+    image: phpmyadmin/phpmyadmin
+    ports:
+      - 81:80
+    environment:
+      PMA_HOST: database
+      PMA_PORT: 3306
+
+volumes:
+  mysql:
+
+networks:
+  default:
+    name: book-store-network

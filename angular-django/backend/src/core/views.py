@@ -4,14 +4,16 @@ from django.contrib.auth import authenticate
 from django.utils import timezone
 from django.conf import settings
 from django.http import Http404
+from django.utils.crypto import get_random_string
+from django.dispatch import Signal
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.authentication import BasicAuthentication
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from .authentication import JWTAuthentication
-from .models import RefreshToken, Profile
-from .serializers import RefreshTokenSerializer, UserSerializer, ProfileSerializer, LoginSerializer, RegisterSerializer
+from .models import RefreshToken, Profile, PasswordReset
+from .serializers import RefreshTokenSerializer, UserSerializer, ProfileSerializer, LoginSerializer, RegisterSerializer, EmailSerializer, PasswordResetSerializer
 from .permissions import IsUser
 
 
@@ -89,7 +91,8 @@ class Register(APIView):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         user = authenticate(
-            request, email=request.data['email'], password=request.data['password'])
+            request, email=request.data['email'], password=request.data['password']
+        )
         Profile.objects.create(user=user)
         response = create_response_tokens_from_user(user)
         return response
@@ -121,7 +124,8 @@ class Logout(APIView):
         cookie_token = request.COOKIES.get('refresh_token')
         if cookie_token is not None:
             db_token = RefreshToken.objects.get(
-                user=request.user, token=cookie_token)
+                user=request.user, token=cookie_token
+            )
             if db_token is not None:
                 db_token.delete()
                 return Response('Logged out', status=status.HTTP_200_OK)
@@ -148,3 +152,20 @@ class ProfileView(APIView):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.validated_data)
+
+
+class ResetPasswordEmailView(APIView):
+    authentication_classes = []
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        serializer = EmailSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        password_reset = PasswordReset.objects.create(
+            email=request.data['email'], token=get_random_string(length=64)
+        )
+        return Response('OK')
+
+
+class ResetPasswordView(APIView):
+    pass

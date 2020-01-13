@@ -31,6 +31,33 @@ class RegisterSerializer(serializers.Serializer):
         return user
 
 
+class PasswordResetSerializer(serializers.Serializer):
+    password = serializers.CharField(max_length=128)
+    password_confirmation = serializers.CharField(max_length=128)
+    email = serializers.EmailField()
+    token = serializers.CharField()
+
+    def validate_email(self, email):
+        existing = User.objects.filter(email=email).first()
+        if not existing:
+            raise serializers.ValidationError(
+                "That email address does not exist"
+            )
+        return email
+
+
+class EmailSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+
+    def validate_email(self, email):
+        existing = User.objects.filter(email=email).first()
+        if not existing:
+            raise serializers.ValidationError(
+                "That email address does not exist"
+            )
+        return email
+
+
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User

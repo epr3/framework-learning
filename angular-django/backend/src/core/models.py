@@ -17,6 +17,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     objects = UserManager()
 
+
 class Profile(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
     name = models.CharField(max_length=50, blank=True)
@@ -30,3 +31,10 @@ class RefreshToken(models.Model):
     token = models.CharField(max_length=255)
     expiry_date = models.DateTimeField()
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+
+class PasswordReset(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
+    email = models.EmailField(unique=True)
+    token = models.CharField(max_length=255)
+    expiry_date = models.DateTimeField(auto_now=True)

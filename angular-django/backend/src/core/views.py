@@ -162,11 +162,13 @@ class ResetPasswordEmailView(APIView):
     def post(self, request):
         serializer = EmailSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
+        email = request.data['email']
+        token = get_random_string(length=64)
         PasswordReset.objects.filter(email=request.data['email']).delete()
         password_reset = PasswordReset.objects.create(
-            email=request.data['email'], token=get_random_string(length=64)
+            email=email, token=token
         )
-        send_feedback_email_task.delay()
+        send_feedback_email_task.delay(email, token)
         return Response('OK')
 
 

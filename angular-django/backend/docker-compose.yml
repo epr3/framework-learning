@@ -47,7 +47,7 @@ services:
     image: mailhog/mailhog
     ports:
       - 1025:1025
-      - 85:8025
+      - 8083:8025
 
   redis-commander:
     container_name: book-store-api-redis-commander
@@ -60,7 +60,7 @@ services:
         session:redis:6379:2,
         queue:redis:6379:3
     ports:
-      - 84:8081
+      - 8082:8081
 
   phpmyadmin:
     container_name: book-store-api-phpmyadmin
@@ -68,7 +68,7 @@ services:
       - database
     image: phpmyadmin/phpmyadmin
     ports:
-      - 81:80
+      - 8081:80
     environment:
       PMA_HOST: database
       PMA_PORT: 3306

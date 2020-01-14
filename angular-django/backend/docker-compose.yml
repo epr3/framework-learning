@@ -20,6 +20,8 @@ services:
       context: .
       dockerfile: ./containers/python/Dockerfile
     command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/code
     ports:
       - "8000:8000"
     depends_on:
@@ -30,6 +32,8 @@ services:
     build:
       context: .
       dockerfile: ./containers/python/Dockerfile
+    volumes:
+      - .:/code
     command: celery -A app worker -l info
     depends_on:
       - redis

@@ -15,6 +15,7 @@ from .authentication import JWTAuthentication
 from .models import RefreshToken, Profile, PasswordReset
 from .serializers import RefreshTokenSerializer, UserSerializer, ProfileSerializer, LoginSerializer, RegisterSerializer, EmailSerializer, PasswordResetSerializer
 from .permissions import IsUser
+from .tasks import send_feedback_email_task
 
 
 def create_response_tokens_from_user(user):
@@ -161,9 +162,11 @@ class ResetPasswordEmailView(APIView):
     def post(self, request):
         serializer = EmailSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
+        PasswordReset.objects.filter(email=request.data['email']).delete()
         password_reset = PasswordReset.objects.create(
             email=request.data['email'], token=get_random_string(length=64)
         )
+        send_feedback_email_task.delay()
         return Response('OK')
 
 

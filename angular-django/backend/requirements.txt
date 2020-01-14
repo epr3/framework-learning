@@ -1,5 +1,8 @@
+amqp==2.5.2
 asgiref==3.2.3
 autopep8==1.4.4
+billiard==3.6.1.0
+celery==4.4.0
 coverage==5.0.1
 Django==3.0.2
 django-cors-headers==3.2.1
@@ -9,6 +12,7 @@ entrypoints==0.3
 factory-boy==2.12.0
 Faker==3.0.0
 flake8==3.7.9
+kombu==4.6.7
 lockfile==0.12.2
 mccabe==0.6.1
 Pillow==7.0.0
@@ -17,6 +21,8 @@ pyflakes==2.1.1
 PyJWT==1.7.1
 python-dateutil==2.8.1
 pytz==2019.3
+redis==3.3.11
 six==1.13.0
 sqlparse==0.3.0
 text-unidecode==1.3
+vine==1.3.0

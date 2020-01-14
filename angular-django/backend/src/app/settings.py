@@ -37,6 +37,13 @@ CORS_ORIGIN_WHITELIST = [
     "http://127.0.0.1:4200"
 ]
 
+# CELERY STUFF
+CELERY_BROKER_URL = 'redis://redis:6379'
+CELERY_RESULT_BACKEND = 'redis://redis:6379'
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+
 # Application definition
 
 INSTALLED_APPS = [

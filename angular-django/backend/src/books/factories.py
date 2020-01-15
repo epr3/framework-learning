@@ -47,7 +47,7 @@ class BookFactory(factory.DjangoModelFactory):
     name = factory.LazyFunction(fake.name)
     description = factory.LazyFunction(fake.text)
     publishing_house = factory.LazyFunction(fake.name)
-    publishing_date = factory.LazyFunction(fake.date)
+    publishing_date = factory.LazyFunction(fake.date_object)
     isbn_13 = factory.LazyFunction(fake.isbn13)
     isbn_10 = factory.LazyFunction(fake.isbn10)
     pages = factory.LazyFunction(fake.random_number)

@@ -96,7 +96,7 @@ class BookModelTestCase(TestCase):
     def test_publishing_house_field_label(self):
         field_label = self.book._meta.get_field(
             'publishing_house').verbose_name
-        self.assertEqual(field_label, 'publishing_house')
+        self.assertEqual(field_label, 'publishing house')
 
     def test_publishing_house_length(self):
         max_length = self.book._meta.get_field('publishing_house').max_length

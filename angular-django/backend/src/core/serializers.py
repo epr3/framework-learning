@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import RefreshToken, User, Profile
+from .models import User, Profile
 
 
 class LoginSerializer(serializers.Serializer):
@@ -33,7 +33,6 @@ class RegisterSerializer(serializers.Serializer):
 
 class PasswordResetSerializer(serializers.Serializer):
     password = serializers.CharField(max_length=128)
-    password_confirmation = serializers.CharField(max_length=128)
     email = serializers.EmailField()
     token = serializers.CharField()
 
@@ -83,9 +82,3 @@ class ProfileSerializer(serializers.ModelSerializer):
         instance.save()
         user.save()
         return instance
-
-
-class RefreshTokenSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = RefreshToken
-        fields = ['token', 'expiry_date', 'user']

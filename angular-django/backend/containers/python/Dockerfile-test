@@ -4,9 +4,9 @@ RUN pip install pipenv
 RUN mkdir /code
 WORKDIR /code
 COPY Pipfile* ./
-RUN pipenv lock --requirements > requirements.txt
-RUN pipenv lock --dev > requirements-dev.txt
+RUN pipenv lock -r > requirements.txt
 RUN pip install -r requirements.txt
+RUN pipenv lock -r -d > requirements-dev.txt
 RUN pip install -r requirements-dev.txt
 COPY . /code/
 WORKDIR /code/src

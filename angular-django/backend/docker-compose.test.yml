@@ -1,0 +1,13 @@
+version: "3.5"
+
+services:
+  test:
+    container_name: book-store-api-test
+    build:
+      context: .
+      dockerfile: ./containers/python/Dockerfile-test
+    command: python manage.py test -v 2
+    volumes:
+      - .:/code
+    environment:
+      - DJANGO_SETTINGS_MODULE=app.testing-settings

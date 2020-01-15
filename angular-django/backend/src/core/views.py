@@ -13,7 +13,7 @@ from rest_framework.authentication import BasicAuthentication
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from .authentication import JWTAuthentication
 from .models import RefreshToken, Profile, PasswordReset
-from .serializers import RefreshTokenSerializer, UserSerializer, ProfileSerializer, LoginSerializer, RegisterSerializer, EmailSerializer, PasswordResetSerializer
+from .serializers import UserSerializer, ProfileSerializer, LoginSerializer, RegisterSerializer, EmailSerializer, PasswordResetSerializer
 from .permissions import IsUser
 from .tasks import send_feedback_email_task
 
@@ -45,17 +45,13 @@ def create_response_tokens_from_user(user):
                               settings.JWT_ALGORITHM)
     refresh_token = jwt.encode(refresh_payload, settings.JWT_SECRET,
                                settings.JWT_ALGORITHM)
-    serializer = RefreshTokenSerializer(
-        data={
-            'token':
-            refresh_token.decode('utf-8'),
-            'user':
-            user.id,
-            'expiry_date': timezone.now() + timedelta(
-                seconds=settings.JWT_REFRESH_EXP_DELTA_SECONDS)
-        })
-    serializer.is_valid(raise_exception=True)
-    serializer.save()
+    RefreshToken.objects.create(
+        token=refresh_token.decode('utf-8'),
+        user=user,
+        expiry_date=timezone.now() + timedelta(
+            seconds=settings.JWT_REFRESH_EXP_DELTA_SECONDS
+        )
+    )
     response = Response({'access_token': access_token},
                         status=status.HTTP_200_OK)
     response.set_cookie(
@@ -70,9 +66,10 @@ def create_response_tokens_from_user(user):
 class Login(APIView):
     authentication_classes = [BasicAuthentication]
     permission_classes = [AllowAny]
+    serializer_class = LoginSerializer
 
     def post(self, request):
-        serializer = LoginSerializer(data=request.data)
+        serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = authenticate(request, **serializer.validated_data)
         if user is not None:
@@ -86,9 +83,10 @@ class Login(APIView):
 class Register(APIView):
     authentication_classes = [BasicAuthentication]
     permission_classes = [AllowAny]
+    serializer_class = RegisterSerializer
 
     def post(self, request):
-        serializer = RegisterSerializer(data=request.data)
+        serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         user = authenticate(
@@ -135,6 +133,7 @@ class Logout(APIView):
 
 class ProfileView(APIView):
     permission_classes = [IsAuthenticated, IsUser]
+    serializer_class = ProfileSerializer
 
     def get_object(self, user):
         try:
@@ -144,12 +143,12 @@ class ProfileView(APIView):
 
     def get(self, request):
         profile = self.get_object(request.user.id)
-        serializer = ProfileSerializer(profile)
+        serializer = self.serializer_class(profile)
         return Response(serializer.data)
 
     def put(self, request):
         profile = self.get_object(request.user.id)
-        serializer = ProfileSerializer(profile, data=request.data)
+        serializer = self.serializer_class(profile, data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.validated_data)
@@ -158,9 +157,10 @@ class ProfileView(APIView):
 class ResetPasswordEmailView(APIView):
     authentication_classes = []
     permission_classes = [AllowAny]
+    serializer_class = EmailSerializer
 
     def post(self, request):
-        serializer = EmailSerializer(data=request.data)
+        serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
         email = request.data['email']
         token = get_random_string(length=64)
@@ -173,4 +173,10 @@ class ResetPasswordEmailView(APIView):
 
 
 class ResetPasswordView(APIView):
-    pass
+    authentication_classes = []
+    permission_classes = [AllowAny]
+    serializer_class = PasswordResetSerializer
+
+    def post(self, request):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)

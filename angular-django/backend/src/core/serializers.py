@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import User, Profile
+from .models import User, Profile, PasswordReset
 
 
 class LoginSerializer(serializers.Serializer):
@@ -35,6 +35,13 @@ class PasswordResetSerializer(serializers.Serializer):
     password = serializers.CharField(max_length=128)
     email = serializers.EmailField()
     token = serializers.CharField()
+
+    def validate_token(self, token):
+        existing = PasswordReset.objects.get(token=token)
+        if not existing:
+            raise serializers.ValidationError(
+                "Password reset could not be done.")
+        return token
 
     def validate_email(self, email):
         existing = User.objects.filter(email=email).first()

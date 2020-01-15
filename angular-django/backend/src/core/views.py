@@ -172,6 +172,13 @@ class ResetPasswordEmailView(APIView):
         return Response('OK')
 
 
+class ChangePasswordView(APIView):
+    def post(self, request):
+        user = User.objects.get(email=request.user.email)
+        user.set_password(request.data['password'])
+        return Response('OK')
+
+
 class ResetPasswordView(APIView):
     authentication_classes = []
     permission_classes = [AllowAny]
@@ -180,3 +187,6 @@ class ResetPasswordView(APIView):
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
+        user = User.objects.get(email=request.data['email'])
+        user.set_password(request.data['password'])
+        return Response('OK')

@@ -28,5 +28,5 @@ urlpatterns = [
     path('password-reset/', core_views.ResetPasswordEmailView.as_view(),
          name='password-reset-email'),
     path('books/', book_views.BookListView.as_view(), name='book-list'),
-    path('books/<uuid:id>/', book_views.BookDetailView.as_view(), name='book-detail')
+    path('books/<uuid:pk>/', book_views.BookDetailView.as_view(), name='book-detail')
 ]

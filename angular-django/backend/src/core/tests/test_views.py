@@ -14,8 +14,6 @@ class LoginTestCase(APITestCase):
         url = reverse('login')
         data = {'email': self.user.email, 'password': '12345678'}
         response = self.client.post(url, data, format='json')
-        # import pdb
-        # pdb.set_trace()
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(RefreshToken.objects.count(), 1)
 

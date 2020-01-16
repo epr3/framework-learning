@@ -101,3 +101,71 @@ class BookModelTestCase(TestCase):
     def test_publishing_house_length(self):
         max_length = self.book._meta.get_field('publishing_house').max_length
         self.assertEqual(max_length, 255)
+
+    def test_publishing_date_field_label(self):
+        field_label = self.book._meta.get_field(
+            'publishing_date').verbose_name
+        self.assertEqual(field_label, 'publishing date')
+
+    def test_isbn_13_field_label(self):
+        field_label = self.book._meta.get_field(
+            'isbn_13').verbose_name
+        self.assertEqual(field_label, 'isbn 13')
+
+    def test_isbn_13_length(self):
+        max_length = self.book._meta.get_field('isbn_13').max_length
+        self.assertEqual(max_length, 13)
+
+    def test_isbn_10_field_label(self):
+        field_label = self.book._meta.get_field(
+            'isbn_10').verbose_name
+        self.assertEqual(field_label, 'isbn 10')
+
+    def test_isbn_10_length(self):
+        max_length = self.book._meta.get_field('isbn_10').max_length
+        self.assertEqual(max_length, 10)
+
+    def test_pages_field_label(self):
+        field_label = self.book._meta.get_field(
+            'pages').verbose_name
+        self.assertEqual(field_label, 'pages')
+
+    def test_price_field_label(self):
+        field_label = self.book._meta.get_field(
+            'price').verbose_name
+        self.assertEqual(field_label, 'price')
+
+    def test_cover_field_label(self):
+        field_label = self.book._meta.get_field(
+            'cover').verbose_name
+        self.assertEqual(field_label, 'cover')
+
+    def test_book_type_field_label(self):
+        field_label = self.book._meta.get_field(
+            'book_type').verbose_name
+        self.assertEqual(field_label, 'book type')
+
+    def test_book_type_field_length(self):
+        max_length = self.book._meta.get_field(
+            'book_type').max_length
+        self.assertEqual(max_length, 100)
+
+    def test_language_field_label(self):
+        field_label = self.book._meta.get_field(
+            'language').verbose_name
+        self.assertEqual(field_label, 'language')
+
+    def test_series_field_label(self):
+        field_label = self.book._meta.get_field(
+            'series').verbose_name
+        self.assertEqual(field_label, 'series')
+
+    def test_author_field_label(self):
+        field_label = self.book._meta.get_field(
+            'author').verbose_name
+        self.assertEqual(field_label, 'author')
+
+    def test_category_field_label(self):
+        field_label = self.book._meta.get_field(
+            'category').verbose_name
+        self.assertEqual(field_label, 'category')

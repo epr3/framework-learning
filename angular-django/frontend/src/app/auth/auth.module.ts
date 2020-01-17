@@ -14,9 +14,11 @@ import { RegisterComponent } from "./register/register.component";
 
 import { TokenInterceptorService } from "../token-interceptor.service";
 import { AuthService } from "./auth.service";
+import { ResetEmailComponent } from './reset-email/reset-email.component';
+import { ResetPasswordComponent } from './reset-password/reset-password.component';
 
 @NgModule({
-  declarations: [LoginComponent, RegisterComponent],
+  declarations: [LoginComponent, RegisterComponent, ResetEmailComponent, ResetPasswordComponent],
   providers: [
     {
       provide: HTTP_INTERCEPTORS,

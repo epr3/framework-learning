@@ -116,4 +116,40 @@ export class AuthService extends BaseHttp {
         shareReplay()
       );
   }
+
+  resetPasswordEmail({ email }: { email: string }): Observable<object> {
+    return this.http
+      .post<{ email: string }>(
+        `${this.url}/password-reset/`,
+        { email },
+        this.httpOptions
+      )
+      .pipe(
+        tap(() => this.log("password reset email")),
+        catchError(this.handleError<object>("password reset email")),
+        shareReplay()
+      );
+  }
+
+  resetPassword({
+    email,
+    token,
+    password
+  }: {
+    email: string;
+    token: string;
+    password: string;
+  }): Observable<object> {
+    return this.http
+      .post<{ email: string; token: string; password: string }>(
+        `${this.url}/password-reset/done/`,
+        { email, token, password },
+        this.httpOptions
+      )
+      .pipe(
+        tap(() => this.log("password reset")),
+        catchError(this.handleError<object>("password reset")),
+        shareReplay()
+      );
+  }
 }

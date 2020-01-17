@@ -27,6 +27,8 @@ urlpatterns = [
     path('profile/', core_views.ProfileView.as_view(), name='profile'),
     path('password-reset/', core_views.ResetPasswordEmailView.as_view(),
          name='password-reset-email'),
+    path('password-reset/done/',
+         core_views.ResetPasswordView.as_view(), name='password-reset'),
     path('books/', book_views.BookListView.as_view(), name='book-list'),
     path('books/<uuid:pk>/', book_views.BookDetailView.as_view(), name='book-detail')
 ]

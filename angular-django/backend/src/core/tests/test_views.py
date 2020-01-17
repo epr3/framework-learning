@@ -1,3 +1,4 @@
+from django.core import mail
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
@@ -100,3 +101,15 @@ class ProfileTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['name'], 'test2')
         self.assertEqual(response.data['user']['email'], 'random@email.com')
+
+
+class ResetPasswordEmailViewTestCase(APITestCase):
+    def setUp(self):
+        self.user = UserFactory()
+
+    def post_test(self):
+        url = reverse('password-reset-email')
+        response = self.client.post(
+            url, {'email': self.user.email}, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(mail.outbox), 1)

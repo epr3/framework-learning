@@ -176,6 +176,7 @@ class ChangePasswordView(APIView):
     def post(self, request):
         user = User.objects.get(email=request.user.email)
         user.set_password(request.data['password'])
+        user.save()
         return Response('OK')
 
 

@@ -30,6 +30,7 @@ describe("TokenInterceptorService", () => {
   }
 
   let authService: FakeAuthService;
+  let httpMock: HttpTestingController;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -44,14 +45,12 @@ describe("TokenInterceptorService", () => {
       ]
     });
     authService = TestBed.get(AuthService);
+    httpMock = TestBed.get(HttpTestingController);
   });
 
-  afterEach(inject(
-    [HttpTestingController],
-    (httpMock: HttpTestingController) => {
-      httpMock.verify();
-    }
-  ));
+  afterEach(() => {
+    httpMock.verify();
+  });
 
   it("should be created", () => {
     const service: TokenInterceptorService = TestBed.get(
@@ -61,8 +60,8 @@ describe("TokenInterceptorService", () => {
   });
 
   it("should add an authorization header", inject(
-    [HttpClient, HttpTestingController],
-    (http: HttpClient, httpMock: HttpTestingController) => {
+    [HttpClient],
+    (http: HttpClient) => {
       authService.logger.next(true);
 
       http.get("/data").subscribe(response => {
@@ -77,13 +76,12 @@ describe("TokenInterceptorService", () => {
       expect(req.request.method).toEqual("GET");
 
       req.flush({ foo: "bar" });
-      httpMock.verify();
     }
   ));
 
   it("should not add an authorization header if the url is login", inject(
-    [HttpClient, HttpTestingController],
-    (http: HttpClient, httpMock: HttpTestingController) => {
+    [HttpClient],
+    (http: HttpClient) => {
       http.post("/login", { test: "test" }).subscribe(response => {
         expect(response).toBeTruthy();
       });
@@ -94,13 +92,12 @@ describe("TokenInterceptorService", () => {
       expect(req.request.method).toEqual("POST");
 
       req.flush({ foo: "bar" });
-      httpMock.verify();
     }
   ));
 
   it("should throw error if the url is refresh", inject(
-    [HttpClient, HttpTestingController],
-    (http: HttpClient, httpMock: HttpTestingController) => {
+    [HttpClient],
+    (http: HttpClient) => {
       authService.deleteAuth = jest.fn();
 
       http.post("/refresh", { test: "test" }).subscribe();
@@ -111,14 +108,12 @@ describe("TokenInterceptorService", () => {
       });
 
       expect(authService.deleteAuth).toHaveBeenCalled();
-
-      httpMock.verify();
     }
   ));
 
   it("should throw an error if the url is login", inject(
-    [HttpClient, HttpTestingController],
-    (http: HttpClient, httpMock: HttpTestingController) => {
+    [HttpClient],
+    (http: HttpClient) => {
       authService.refreshToken = jest.fn();
 
       http.post("/login", { test: "test" }).subscribe();
@@ -128,13 +123,12 @@ describe("TokenInterceptorService", () => {
         statusText: "Forbidden"
       });
       expect(authService.refreshToken).toHaveBeenCalledTimes(0);
-      httpMock.verify();
     }
   ));
 
   it("should refresh the token on other calls", inject(
-    [HttpClient, HttpTestingController],
-    (http: HttpClient, httpMock: HttpTestingController) => {
+    [HttpClient],
+    (http: HttpClient) => {
       authService.refreshToken = jest.fn();
 
       http.post("/data", { test: "test" }).subscribe();
@@ -144,13 +138,12 @@ describe("TokenInterceptorService", () => {
         statusText: "Forbidden"
       });
       expect(authService.refreshToken).toHaveBeenCalled();
-      httpMock.verify();
     }
   ));
 
   it("should call refresh token once on multiple parallel calls", inject(
-    [HttpClient, HttpTestingController],
-    (http: HttpClient, httpMock: HttpTestingController) => {
+    [HttpClient],
+    (http: HttpClient) => {
       authService.refreshToken = jest.fn();
 
       http.post("/data", { test: "test" }).subscribe();
@@ -168,7 +161,6 @@ describe("TokenInterceptorService", () => {
       ]);
 
       expect(authService.refreshToken).toHaveBeenCalledTimes(1);
-      httpMock.verify();
     }
   ));
 });

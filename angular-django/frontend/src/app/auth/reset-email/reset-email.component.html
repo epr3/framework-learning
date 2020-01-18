@@ -1,1 +1,50 @@
-<p>reset-email works!</p>
+<div class="reset-wrapper">
+  <mat-card>
+    <mat-card-title>Reset password</mat-card-title>
+    <ng-container *ngIf="!formSent; then thenTemplate; else elseTemplate">
+    </ng-container>
+    <ng-template #thenTemplate>
+      <mat-card-content>
+        <form
+          class="reset-form"
+          [formGroup]="emailForm"
+          (ngSubmit)="onSubmit()"
+        >
+          <mat-form-field>
+            <mat-label>E-mail</mat-label>
+            <input
+              type="email"
+              matInput
+              formControlName="email"
+              placeholder="E-mail"
+            />
+            <mat-error *ngIf="emailForm.get('email').errors?.required">
+              E-mail is required
+            </mat-error>
+            <mat-error *ngIf="emailForm.get('email').errors?.email">
+              E-mail is invalid
+            </mat-error>
+          </mat-form-field>
+          <button mat-raised-button type="submit" color="primary">
+            Submit
+          </button>
+        </form>
+      </mat-card-content>
+    </ng-template>
+    <ng-template #elseTemplate>
+      <mat-card-content id="reset-success">
+        <p>
+          An e-mail with the password reset instructions was sent to the
+          following address:
+          <strong>
+            {{ emailForm.get("email").value }}
+          </strong>
+        </p>
+        <p>
+          Didn't receive an email? Click
+          <span (click)="onSubmit()">here</span> to resend it!
+        </p>
+      </mat-card-content>
+    </ng-template>
+  </mat-card>
+</div>

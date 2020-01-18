@@ -26,6 +26,9 @@
             formControlName="password"
             placeholder="******"
           />
+          <mat-hint>
+            <a routerLink="/reset-password">Forgot your password?</a>
+          </mat-hint>
           <mat-error *ngIf="loginForm.get('password').errors?.required">
             Password is required
           </mat-error>

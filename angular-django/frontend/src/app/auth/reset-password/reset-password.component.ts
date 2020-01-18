@@ -1,4 +1,5 @@
 import { Component, OnInit } from "@angular/core";
+import { Router, ActivatedRoute } from "@angular/router";
 import { FormBuilder, Validators } from "@angular/forms";
 
 import { AuthService } from "../auth.service";
@@ -9,20 +10,34 @@ import { AuthService } from "../auth.service";
   styleUrls: ["./reset-password.component.scss"]
 })
 export class ResetPasswordComponent implements OnInit {
-  passwordReset = false;
+  formSent = false;
   resetForm = this.fb.group({
     email: ["", [Validators.required, Validators.email]],
     token: ["", Validators.required],
     password: ["", Validators.required]
   });
-  constructor(private fb: FormBuilder, private authService: AuthService) {}
+  constructor(
+    private fb: FormBuilder,
+    private authService: AuthService,
+    private router: Router,
+    private route: ActivatedRoute
+  ) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.resetForm.setValue({
+      token: this.route.snapshot.paramMap.get("token"),
+      email: this.route.snapshot.paramMap.get("email"),
+      password: ""
+    });
+  }
 
   onSubmit() {
     if (this.resetForm.valid) {
       this.authService.resetPassword(this.resetForm.value).subscribe(() => {
-        this.passwordReset = true;
+        this.formSent = true;
+        setTimeout(() => {
+          this.router.navigateByUrl("/login");
+        }, 5000);
       });
     }
   }

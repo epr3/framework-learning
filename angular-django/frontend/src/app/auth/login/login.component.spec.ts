@@ -19,7 +19,7 @@ import { LoginComponent } from "./login.component";
 
 describe("LoginComponent", () => {
   class FakeAuthService {
-    login({ email, password }: { email: string; password: string }) {
+    login(_: any) {
       return of({ access_token: "test" });
     }
   }

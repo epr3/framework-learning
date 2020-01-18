@@ -20,15 +20,7 @@ import { RegisterComponent } from "./register.component";
 
 describe("RegisterComponent", () => {
   class FakeAuthService {
-    register({
-      email,
-      password,
-      password_confirmation
-    }: {
-      email: string;
-      password: string;
-      password_confirmation: string;
-    }) {
+    register(_: any) {
       return of({ access_token: "test" });
     }
   }
@@ -66,6 +58,7 @@ describe("RegisterComponent", () => {
   it("should create", () => {
     expect(component).toBeTruthy();
   });
+
   it("should be invalid when empty", () => {
     expect(component.registerForm.valid).toBeFalsy();
   });

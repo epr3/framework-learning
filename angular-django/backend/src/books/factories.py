@@ -64,5 +64,5 @@ class ReviewFactory(factory.DjangoModelFactory):
     class Meta:
         model = Review
     user = factory.SubFactory(ProfileFactory)
-    grade = factory.LazyFunction(fake.random_int(min=1, max=5))
+    grade = fake.random_int(min=1, max=5)
     book = factory.SubFactory(BookFactory)

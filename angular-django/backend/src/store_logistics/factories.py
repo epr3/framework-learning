@@ -13,7 +13,7 @@ class AddressFactory(factory.DjangoModelFactory):
     class Meta:
         model = Address
     address = factory.LazyFunction(fake.address)
-    city = factory.LazyFunction(city)
+    city = factory.LazyFunction(fake.city)
     county = factory.LazyFunction(fake.state)
     postal_code = factory.LazyFunction(fake.postalcode)
     user = factory.SubFactory(ProfileFactory)
@@ -22,7 +22,7 @@ class AddressFactory(factory.DjangoModelFactory):
 class OrderFactory(factory.DjangoModelFactory):
     class Meta:
         model = Order
-    status = factory.LazyFunction(fake.random_int(min=0, max=5, step=1))
+    status = fake.random_int(min=0, max=5)
     user = factory.SubFactory(ProfileFactory)
     delivery_address = factory.SubFactory(AddressFactory)
     billing_address = factory.SubFactory(AddressFactory)
@@ -33,7 +33,7 @@ class OrderBooksFactory(factory.DjangoModelFactory):
         model = OrderBooks
     book = factory.SubFactory(BookFactory)
     order = factory.SubFactory(OrderFactory)
-    quantity = factory.LazyFunction(fake.random_int(min=0, max=100, step=1))
+    quantity = fake.random_int(min=0, max=100)
 
 
 class OrderWithBookFactory(OrderFactory):

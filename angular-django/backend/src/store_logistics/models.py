@@ -1,5 +1,4 @@
 from uuid import uuid4
-from functools import reduce
 from django.db import models
 from core.models import Profile
 from books.models import Book
@@ -34,7 +33,7 @@ class Order(models.Model):
 
     @property
     def order_value(self):
-        return reduce(lambda x, y: x.book.price * x.quantity + y.book.price * y.quantity, self.books)
+        return sum(o.book.price * o.quantity for o in self.orderbooks_set.all())
 
 
 class OrderBooks(models.Model):

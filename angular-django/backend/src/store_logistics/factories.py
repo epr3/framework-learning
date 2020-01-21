@@ -1,7 +1,7 @@
 import factory
 from faker import Faker
 from faker.providers import address
-from core.factories import ProfileFactory
+from core.factories import UserFactory
 from books.factories import BookFactory
 from .models import Order, OrderBooks, Address
 
@@ -16,14 +16,14 @@ class AddressFactory(factory.DjangoModelFactory):
     city = factory.LazyFunction(fake.city)
     county = factory.LazyFunction(fake.state)
     postal_code = factory.LazyFunction(fake.postalcode)
-    user = factory.SubFactory(ProfileFactory)
+    user = factory.SubFactory(UserFactory)
 
 
 class OrderFactory(factory.DjangoModelFactory):
     class Meta:
         model = Order
     status = fake.random_int(min=0, max=5)
-    user = factory.SubFactory(ProfileFactory)
+    user = factory.SubFactory(UserFactory)
     delivery_address = factory.SubFactory(AddressFactory)
     billing_address = factory.SubFactory(AddressFactory)
 

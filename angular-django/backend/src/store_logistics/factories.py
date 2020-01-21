@@ -37,4 +37,4 @@ class OrderBooksFactory(factory.DjangoModelFactory):
 
 
 class OrderWithBookFactory(OrderFactory):
-    union = factory.RelatedFactory(OrderBooksFactory, 'order')
+    orderbooks_set = factory.RelatedFactory(OrderBooksFactory, 'order')

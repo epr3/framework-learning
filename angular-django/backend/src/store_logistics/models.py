@@ -1,6 +1,6 @@
 from uuid import uuid4
 from django.db import models
-from core.models import Profile
+from core.models import User
 from books.models import Book
 
 
@@ -12,7 +12,7 @@ class Address(models.Model):
     city = models.CharField(max_length=255)
     county = models.CharField(max_length=255)
     postal_code = models.CharField(max_length=10)
-    user = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
 
 
 class Order(models.Model):
@@ -24,7 +24,7 @@ class Order(models.Model):
                 'in delivery', 'delivered']
         ))
     )
-    user = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     delivery_address = models.ForeignKey(
         Address, on_delete=models.DO_NOTHING, related_name='order_delivery_address')
     billing_address = models.ForeignKey(

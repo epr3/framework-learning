@@ -23,8 +23,7 @@ class BookWithQuantitySerializer(serializers.ModelSerializer):
         model = OrderBooks
         fields = ['id', 'quantity', 'price',
                   'book_id', 'cover', 'language', 'author']
-        read_only_fields = ['id', 'price', 'cover',
-                            'book_id', 'language', 'author']
+        read_only_fields = ['id', 'price', 'cover', 'language', 'author']
 
 
 class OrderSerializer(serializers.ModelSerializer):

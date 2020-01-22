@@ -17,6 +17,7 @@ from django.contrib import admin
 from django.urls import path
 from core import views as core_views
 from books import views as book_views
+from store_logistics import views as store_logistics_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -30,5 +31,7 @@ urlpatterns = [
     path('password-reset/done/',
          core_views.ResetPasswordView.as_view(), name='password-reset'),
     path('books/', book_views.BookListView.as_view(), name='book-list'),
-    path('books/<uuid:pk>/', book_views.BookDetailView.as_view(), name='book-detail')
+    path('books/<uuid:pk>/', book_views.BookDetailView.as_view(), name='book-detail'),
+    path('addresses/', store_logistics_views.AddressListView.as_view(),
+         name='address-list')
 ]

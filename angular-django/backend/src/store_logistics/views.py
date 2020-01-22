@@ -1,3 +1,12 @@
-from django.shortcuts import render
+from rest_framework import generics
+from core.permissions import IsUser
+from .models import Address
+from .serializers import AddressSerializer
 
-# Create your views here.
+
+class AddressListView(generics.ListCreateAPIView):
+    permission_classes = [IsUser]
+    serializer_class = AddressSerializer
+
+    def get_queryset(self):
+        return Address.objects.filter(user=self.request.user)

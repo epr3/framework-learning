@@ -7,6 +7,9 @@ omit =
   */apps.py
   */management/*
   */admin.py
+  */models.py
+  core/managers.py
+  */tests/*
 [report]
 fail_under = 90
 show_missing = True

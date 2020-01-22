@@ -1,6 +1,8 @@
 from django.test import TestCase
 
+from core.factories import UserFactory
 from books.factories import BookFactory
+from ..models import Order, OrderBooks
 from ..factories import OrderWithBookFactory, OrderFactory, AddressFactory
 from ..serializers import AddressSerializer, OrderSerializer, OrderBooksSerializer
 
@@ -22,6 +24,7 @@ class OrderSerializerTest(TestCase):
         self.order = OrderWithBookFactory()
         self.address = AddressFactory()
         self.book = BookFactory()
+        self.user = UserFactory()
         self.serializer = OrderSerializer(instance=self.order)
 
     def test_contains_expected_fields(self):
@@ -30,10 +33,11 @@ class OrderSerializerTest(TestCase):
         self.assertCountEqual(
             data.keys(), ['id', 'status', 'delivery_address', 'billing_address', 'order_value', 'books'])
 
-    def test_serializer_save_valid_data(self):
+    def test_serializer_valid_data(self):
         serializer_data = {
-            'delivery_address': self.address.id,
-            'billing_address': self.address.id,
+            'delivery_address_id': self.address.id,
+            'billing_address_id': self.address.id,
+            'user': self.user.id,
             'books': [
                 {
                     'book_id': self.book.id,
@@ -41,3 +45,30 @@ class OrderSerializerTest(TestCase):
                 }
             ]
         }
+
+        serializer = OrderSerializer(data=serializer_data)
+        self.assertTrue(serializer.is_valid())
+
+    def test_serializer_save(self):
+        other_book = BookFactory()
+        serializer_data = {
+            'delivery_address_id': self.address.id,
+            'billing_address_id': self.address.id,
+            'user': self.user.id,
+            'books': [
+                {
+                    'book_id': self.book.id,
+                    'quantity': 1
+                },
+                {
+                    'book_id': other_book.id,
+                    'quantity': 1
+                }
+            ]
+        }
+
+        serializer = OrderSerializer(data=serializer_data)
+        serializer.is_valid()
+        serializer.save()
+        self.assertEqual(Order.objects.count(), 2)
+        self.assertEqual(OrderBooks.objects.count(), 3)

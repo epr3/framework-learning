@@ -84,5 +84,7 @@ class ProfileSerializerTestCase(TestCase):
     def test_contains_expected_fields(self):
         data = self.serializer.data
 
-        self.assertCountEqual(data.keys(),
-                              ['name', 'surname', 'telephone', 'user'])
+        self.assertCountEqual(
+            data.keys(),
+            ['name', 'surname', 'telephone', 'user']
+        )

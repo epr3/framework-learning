@@ -41,10 +41,16 @@ def create_response_tokens_from_user(user):
         timedelta(seconds=settings.JWT_REFRESH_EXP_DELTA_SECONDS)
     }
 
-    access_token = jwt.encode(access_payload, settings.JWT_SECRET,
-                              settings.JWT_ALGORITHM)
-    refresh_token = jwt.encode(refresh_payload, settings.JWT_SECRET,
-                               settings.JWT_ALGORITHM)
+    access_token = jwt.encode(
+        access_payload,
+        settings.JWT_SECRET,
+        settings.JWT_ALGORITHM
+    )
+    refresh_token = jwt.encode(
+        refresh_payload,
+        settings.JWT_SECRET,
+        settings.JWT_ALGORITHM
+    )
     RefreshToken.objects.create(
         token=refresh_token.decode('utf-8'),
         user=user,

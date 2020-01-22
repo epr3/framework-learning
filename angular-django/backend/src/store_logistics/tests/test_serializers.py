@@ -31,7 +31,16 @@ class OrderSerializerTest(TestCase):
         data = self.serializer.data
 
         self.assertCountEqual(
-            data.keys(), ['id', 'status', 'delivery_address', 'billing_address', 'order_value', 'books'])
+            data.keys(),
+            [
+                'id',
+                'status',
+                'delivery_address',
+                'billing_address',
+                'order_value',
+                'books'
+            ]
+        )
 
     def test_serializer_valid_data(self):
         serializer_data = {

@@ -22,7 +22,8 @@ class Order(models.Model):
             range(0, 6),
             ['placed', 'in processing', 'prepared for delivery',
                 'in delivery', 'delivered']
-        ))
+        )),
+        default=0
     )
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     delivery_address = models.ForeignKey(
@@ -39,6 +40,7 @@ class Order(models.Model):
 class OrderBooks(models.Model):
     class Meta:
         verbose_name_plural = "Order books"
+        unique_together = ['book', 'order']
     id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
     book = models.ForeignKey(Book, on_delete=models.CASCADE)
     order = models.ForeignKey(Order, on_delete=models.CASCADE)

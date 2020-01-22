@@ -49,11 +49,7 @@ class Book(models.Model):
 
 class Review(models.Model):
     class Meta:
-        constraints = [
-            models.UniqueConstraint(
-                fields=['user', 'book'], name='unique_review_user'
-            )
-        ]
+        unique_together = ['user', 'book']
     id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
     user = models.ForeignKey(Profile, on_delete=models.CASCADE)
     grade = models.IntegerField(choices=list(zip(range(1, 6), range(1, 6))))

@@ -39,4 +39,10 @@ class OrderSerializer(serializers.ModelSerializer):
                   'billing_address', 'order_value', 'books']
         read_only_fields = ['id', 'status', 'order_value']
 
-    # def create(self, validated_data):
+    def create(self, validated_data):
+        books_data = validated_data.pop('books')
+        order = Order.objects.create(**validated_data)
+        for item in books_data:
+            OrderBooks.objects.create(
+                order=order, book=item.book, quantity=item.quantity)
+        return order

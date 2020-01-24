@@ -33,5 +33,10 @@ urlpatterns = [
     path('books/', book_views.BookListView.as_view(), name='book-list'),
     path('books/<uuid:pk>/', book_views.BookDetailView.as_view(), name='book-detail'),
     path('addresses/', store_logistics_views.AddressListView.as_view(),
-         name='address-list')
+         name='address-list'),
+    path('addresses/<uuid:pk>/',
+         store_logistics_views.AddressDetailView.as_view(), name='address-detail'),
+    path('orders/', store_logistics_views.OrderListView.as_view(), name='order-list'),
+    path('orders/<uuid:pk>/',
+         store_logistics_views.OrderDetailView.as_view(), name='order-detail')
 ]

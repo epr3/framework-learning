@@ -7,8 +7,9 @@ from .models import Order, Address, OrderBooks
 class AddressSerializer(serializers.ModelSerializer):
     class Meta:
         model = Address
-        fields = ['id', 'address', 'city', 'county', 'postal_code']
+        fields = ['id', 'address', 'city', 'county', 'postal_code', 'user']
         read_only_fields = ['id']
+        extra_kwargs = {'user': {'write_only': True}}
 
 
 class OrderBooksSerializer(serializers.ModelSerializer):

@@ -20,4 +20,13 @@ export class ProfileService extends BaseHttp {
         catchError(this.handleError<Profile>("fetch profile", null))
       );
   }
+
+  putProfile(profile: Profile): Observable<Profile> {
+    return this.http
+      .put<Profile>(`${this.url}/profile/`, this.httpOptions)
+      .pipe(
+        tap(() => this.log("updated profile")),
+        catchError(this.handleError<Profile>("update profile", profile))
+      );
+  }
 }

@@ -15,9 +15,11 @@ import { ProfileHomeComponent } from "./profile-home/profile-home.component";
 
 import { ProfileService } from "./profile.service";
 import { TokenInterceptorService } from "../token-interceptor.service";
+import { ProfileFormComponent } from './profile-form/profile-form.component';
+import { AddressFormComponent } from './address-form/address-form.component';
 
 @NgModule({
-  declarations: [ProfileComponent, ProfileHomeComponent],
+  declarations: [ProfileComponent, ProfileHomeComponent, ProfileFormComponent, AddressFormComponent],
   providers: [
     {
       provide: HTTP_INTERCEPTORS,

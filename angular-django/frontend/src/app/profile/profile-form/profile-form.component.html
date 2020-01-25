@@ -1,0 +1,83 @@
+<div class="profile-home-wrapper">
+  <mat-card>
+    <mat-card-title>Profile</mat-card-title>
+    <mat-card-content>
+      <form
+        class="profile-form"
+        [formGroup]="profileDataForm"
+        (ngSubmit)="onSubmit()"
+      >
+        <mat-form-field>
+          <mat-label>E-mail</mat-label>
+          <input
+            type="email"
+            matInput
+            formControlName="email"
+            placeholder="E-mail"
+          />
+          <mat-error *ngIf="profileDataForm.get('email').errors?.required">
+            E-mail is required
+          </mat-error>
+          <mat-error *ngIf="profileDataForm.get('email').errors?.email">
+            E-mail is invalid
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label>Name</mat-label>
+          <input
+            type="text"
+            matInput
+            formControlName="name"
+            placeholder="Name"
+          />
+          <mat-error *ngIf="profileDataForm.get('name').errors?.required">
+            Name is required
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label>Surname</mat-label>
+          <input
+            type="text"
+            matInput
+            formControlName="surname"
+            placeholder="Surname"
+          />
+          <mat-error *ngIf="profileDataForm.get('surname').errors?.required">
+            Surname is required
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label>Telephone</mat-label>
+          <input
+            type="text"
+            matInput
+            formControlName="telephone"
+            placeholder="telephone"
+          />
+          <mat-error *ngIf="profileDataForm.get('telephone').errors?.required">
+            Telephone is required
+          </mat-error>
+        </mat-form-field>
+        <ng-container
+          *ngIf="isProfileDataEditing; then thenTemplate; else elseTemplate"
+        >
+        </ng-container>
+        <ng-template #thenTemplate>
+          <div class="button-group">
+            <button mat-raised-button color="primary" type="submit">
+              Save
+            </button>
+            <button mat-raised-button color="primary" (click)="toggleEditing()">
+              Cancel
+            </button>
+          </div>
+        </ng-template>
+        <ng-template #elseTemplate>
+          <button mat-raised-button color="primary" (click)="toggleEditing()">
+            Edit
+          </button>
+        </ng-template>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>

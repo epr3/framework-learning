@@ -18,14 +18,16 @@ import { ProfileFormComponent } from "./profile-form.component";
 
 describe("ProfileFormComponent", () => {
   const fakeProfile = {
-    name: "",
-    surname: "",
-    telephone: "",
+    name: "test",
+    surname: "test",
+    telephone: "test",
     user: {
       email: "test@test.com"
     }
   };
   class FakeProfileService {
+    putProfile = jest.fn();
+
     getProfile(): Observable<Profile> {
       return of(fakeProfile);
     }
@@ -92,5 +94,29 @@ describe("ProfileFormComponent", () => {
         expect(item.disabled).toBeFalsy();
       }
     );
+  });
+
+  it("should be invalid when empty", () => {
+    expect(component.profileDataForm.valid).toBeFalsy();
+  });
+
+  it("should call the profile service on form submission", () => {
+    profileService.putProfile.mockReturnValue(of(fakeProfile));
+    component.toggleEditing();
+
+    component.profileDataForm.controls["name"].setValue(fakeProfile.name);
+    component.profileDataForm.controls["surname"].setValue(fakeProfile.surname);
+    component.profileDataForm.controls["email"].setValue(
+      fakeProfile.user.email
+    );
+    component.profileDataForm.controls["telephone"].setValue(
+      fakeProfile.telephone
+    );
+
+    expect(component.profileDataForm.valid).toBeTruthy();
+
+    component.onSubmit();
+
+    expect(profileService.putProfile).toHaveBeenCalledWith(fakeProfile);
   });
 });

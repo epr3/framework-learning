@@ -65,7 +65,28 @@ export class ProfileFormComponent implements OnInit {
   }
 
   onSubmit() {
-    console.log(this.profileDataForm.value);
+    if (this.profileDataForm.valid) {
+      this.profileService
+        .putProfile({
+          telephone: this.profileDataForm.controls.telephone.value,
+          name: this.profileDataForm.controls.name.value,
+          surname: this.profileDataForm.controls.surname.value,
+          user: {
+            email: this.profileDataForm.controls.email.value
+          }
+        })
+        .subscribe(profile => {
+          this.profile = profile;
+          if (this.profile) {
+            this.profileDataForm.setValue({
+              email: this.profile.user.email,
+              telephone: this.profile.telephone,
+              name: this.profile.name,
+              surname: this.profile.surname
+            });
+          }
+        });
+    }
   }
 
   toggleEditing() {

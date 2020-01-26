@@ -10,7 +10,11 @@ services:
       MYSQL_USER: book-store
       MYSQL_PASSWORD: secret
     volumes:
+<<<<<<< HEAD
       - mysql:/var/lib/mysql
+=======
+      - book-store_mysql:/var/lib/mysql
+>>>>>>> remove DS_Store from git
     ports:
       - 33006:3306
 
@@ -74,7 +78,7 @@ services:
       PMA_PORT: 3306
 
 volumes:
-  mysql:
+  book-store_mysql:
 
 networks:
   default:

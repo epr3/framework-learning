@@ -1,0 +1,10 @@
+version: "3.5"
+
+services:
+  composer:
+    container_name: craft-composer-dev-build
+    restart: "no"
+    image: composer
+    volumes:
+      - ./src:/app
+    command: install

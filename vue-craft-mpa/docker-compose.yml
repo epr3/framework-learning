@@ -1,0 +1,75 @@
+version: "3.5"
+
+services:
+  nginx:
+    container_name: craft-nginx
+    depends_on:
+      - php
+    build:
+      context: .
+      dockerfile: ./containers/nginx/Dockerfile
+    expose:
+      - 80
+    ports:
+      - 80:80
+    volumes:
+      - ./src/web:/var/www/html/web
+
+  php:
+    container_name: craft-php
+    depends_on:
+      - database
+    build:
+      context: .
+      dockerfile: containers/php/Dockerfile
+    volumes:
+      - ./src:/var/www/html
+    env_file: ./src/.env
+    expose:
+      - 9000
+
+  database:
+    container_name: craft-mysql
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_DATABASE: craft
+      MYSQL_USER: craft
+      MYSQL_PASSWORD: secret
+    volumes:
+      - craft_mysql:/var/lib/mysql
+    ports:
+      - 33006:3306
+
+  mailhog:
+    container_name: craft-mailhog
+    image: mailhog/mailhog
+    ports:
+      - 1025:1025
+      - 84:8025
+
+  phpmyadmin:
+    container_name: craft-phpmyadmin
+    depends_on:
+      - database
+    image: phpmyadmin/phpmyadmin
+    ports:
+      - 81:80
+    environment:
+      PMA_HOST: database
+      PMA_PORT: 3306
+
+  composer:
+    container_name: craft-composer
+    restart: "no"
+    image: composer
+    volumes:
+      - .:/app
+    entrypoint: composer
+
+volumes:
+  craft_mysql:
+
+networks:
+  default:
+    name: craft-network

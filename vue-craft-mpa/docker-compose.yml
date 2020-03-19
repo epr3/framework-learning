@@ -15,6 +15,19 @@ services:
     volumes:
       - ./src/web:/var/www/html/web
 
+  vue:
+    container_name: craft-vue
+    command: npm run serve
+    build:
+      context: .
+      dockerfile: ./containers/npm/Dockerfile
+    expose:
+      - 8080
+    ports:
+      - 8080:8080
+    volumes:
+      - ./src:/app
+
   php:
     container_name: craft-php
     depends_on:

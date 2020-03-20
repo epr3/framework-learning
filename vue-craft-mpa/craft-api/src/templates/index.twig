@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>{{ siteName }}</title>
+
+    {{
+      craft.twigpack.includeCssModule("app.css")
+    }}
+  </head>
+
+  <body>
+    <div id="app">
+      {% set info = { craftVersion: craft.app.getVersion(), environment:
+      getenv('ENVIRONMENT') } %}
+
+      <hello-world :info="{{ info | json_encode }}">
+        {{ getenv("DB_DSN") }}
+      </hello-world>
+    </div>
+
+    {{ craft.twigpack.includeSafariNomoduleFix() }}
+    <script src="http://172.21.0.3:8080/js/app.js"></script>
+    <script src="http://172.21.0.3:8080/js/chunk-vendors.js"></script>
+  </body>
+</html>

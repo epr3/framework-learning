@@ -1,0 +1,5 @@
+{
+    "require": {
+        "craftcms/element-api": "^2.6"
+    }
+}
